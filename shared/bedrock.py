@@ -22,6 +22,13 @@ import logging
 import math
 from typing import Protocol
 
+from tenacity import (
+    retry,
+    retry_if_exception_type,
+    stop_after_attempt,
+    wait_exponential,
+)
+
 log = logging.getLogger(__name__)
 
 
@@ -33,7 +40,13 @@ class BedrockClientProtocol(Protocol):
 # --- Real client ---------------------------------------------------------
 
 class BedrockClient:
-    """Real AWS Bedrock client. Activated when BEDROCK_MODE=real."""
+    """Real AWS Bedrock client. Activated when BEDROCK_MODE=real.
+
+    Each call is wrapped in a retry: 3 attempts with exponential backoff
+    (1s, 2s, 4s, capped at 8s) on any exception. Permanent failures
+    (e.g. AccessDenied) propagate up after the final attempt and the
+    job_handler's outer retry will mark the job failed.
+    """
 
     def __init__(self, region: str, text_model: str, embed_model: str):
         import boto3  # imported lazily so mock-mode users don't need creds
@@ -41,6 +54,11 @@ class BedrockClient:
         self.text_model = text_model
         self.embed_model = embed_model
 
+    @retry(
+        stop=stop_after_attempt(3),
+        wait=wait_exponential(multiplier=1, min=1, max=8),
+        reraise=True,
+    )
     def embed(self, text: str) -> list[float]:
         response = self.client.invoke_model(
             modelId=self.embed_model,
@@ -48,6 +66,11 @@ class BedrockClient:
         )
         return json.loads(response["body"].read())["embedding"]
 
+    @retry(
+        stop=stop_after_attempt(3),
+        wait=wait_exponential(multiplier=1, min=1, max=8),
+        reraise=True,
+    )
     def generate(self, prompt: str, system: str = "", max_tokens: int = 1024) -> str:
         body: dict = {
             "anthropic_version": "bedrock-2023-05-31",
@@ -99,6 +122,10 @@ def make_bedrock_client(
     region: str,
     text_model: str,
     embed_model: str,
+    gemini_api_key: str = "",
+    gemini_text_model: str = "gemini-2.5-flash",
+    gemini_embed_model: str = "gemini-embedding-001",
+    gemini_embed_dim: int = 1024,
 ) -> BedrockClientProtocol:
     if mode == "mock":
         log.info("BedrockClient: mock mode")
@@ -107,4 +134,18 @@ def make_bedrock_client(
         log.info("BedrockClient: real mode (region=%s, text=%s, embed=%s)",
                  region, text_model, embed_model)
         return BedrockClient(region=region, text_model=text_model, embed_model=embed_model)
-    raise ValueError(f"Unknown BEDROCK_MODE: {mode!r} (expected 'mock' or 'real')")
+    if mode == "gemini":
+        if not gemini_api_key:
+            raise ValueError("BEDROCK_MODE=gemini requires GEMINI_API_KEY")
+        log.info("BedrockClient: gemini mode (text=%s, embed=%s, dim=%d)",
+                 gemini_text_model, gemini_embed_model, gemini_embed_dim)
+        from .gemini import GeminiClient
+        return GeminiClient(
+            api_key=gemini_api_key,
+            text_model=gemini_text_model,
+            embed_model=gemini_embed_model,
+            embed_dim=gemini_embed_dim,
+        )
+    raise ValueError(
+        f"Unknown BEDROCK_MODE: {mode!r} (expected 'mock' | 'real' | 'gemini')"
+    )

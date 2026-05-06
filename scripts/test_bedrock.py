@@ -17,11 +17,18 @@ def main() -> None:
     region = os.getenv("BEDROCK_REGION", "us-east-1")
     text_model = os.getenv("BEDROCK_TEXT_MODEL", "anthropic.claude-sonnet-4-5-20250929-v1:0")
     embed_model = os.getenv("BEDROCK_EMBED_MODEL", "amazon.titan-embed-text-v2:0")
+    gemini_text_model = os.getenv("GEMINI_TEXT_MODEL", "gemini-2.5-flash")
+    gemini_embed_model = os.getenv("GEMINI_EMBED_MODEL", "gemini-embedding-001")
+    gemini_embed_dim = int(os.getenv("GEMINI_EMBED_DIM", "1024"))
 
     print(f"mode:        {mode}")
-    print(f"region:      {region}")
-    print(f"text_model:  {text_model}")
-    print(f"embed_model: {embed_model}")
+    if mode == "gemini":
+        print(f"text_model:  {gemini_text_model}")
+        print(f"embed_model: {gemini_embed_model} @ {gemini_embed_dim}d")
+    else:
+        print(f"region:      {region}")
+        print(f"text_model:  {text_model}")
+        print(f"embed_model: {embed_model}")
     print()
 
     client = make_bedrock_client(
@@ -29,6 +36,10 @@ def main() -> None:
         region=region,
         text_model=text_model,
         embed_model=embed_model,
+        gemini_api_key=os.getenv("GEMINI_API_KEY", ""),
+        gemini_text_model=gemini_text_model,
+        gemini_embed_model=gemini_embed_model,
+        gemini_embed_dim=gemini_embed_dim,
     )
 
     vec = client.embed("hello world")

@@ -1,4 +1,4 @@
-.PHONY: up down logs build server worker restart-worker setup-db setup-opensearch seed-consent scan-events scan-jobs scan-consent scan-vectors peek-queue test-bedrock test-tools test-recommend test-privacy test-e2e demo-conflict show-trace clean ps
+.PHONY: up down logs build server worker restart-worker setup-db setup-opensearch seed-consent scan-events scan-jobs scan-consent scan-vectors wipe-vectors peek-queue test-bedrock test-tools test-recommend test-privacy test-e2e test-rate-limit demo-conflict show-trace list-gemini-models clean ps
 
 up:
 	docker compose up -d --build
@@ -19,8 +19,10 @@ worker:
 	docker compose logs -f worker
 
 # Worker has no auto-reload — restart it after worker code changes.
+# Uses up --force-recreate so .env changes also get picked up
+# (plain `restart` does NOT re-evaluate env vars).
 restart-worker:
-	docker compose restart worker
+	docker compose up -d --force-recreate worker
 
 # Phase 2 — DynamoDB tables and queue inspection
 setup-db:
@@ -34,6 +36,11 @@ setup-opensearch:
 # CUST is optional; omit it to scan everything in the collection
 scan-vectors:
 	docker compose exec worker python /app/scripts/scan_vectors.py $(COLL) $(CUST)
+
+# Clear all docs from the 3 vector collections (indexes stay)
+# Useful when switching LLM backends — vectors from Mock and Gemini aren't comparable
+wipe-vectors:
+	docker compose exec worker python /app/scripts/wipe_vectors.py
 
 scan-events:
 	docker compose exec server python /app/scripts/scan.py customer_events
@@ -50,6 +57,10 @@ peek-queue:
 # Phase 4 — Bedrock wrapper sanity test (mock or real, depending on BEDROCK_MODE)
 test-bedrock:
 	docker compose exec worker python /app/scripts/test_bedrock.py
+
+# Debug: list Gemini models the current API key can call
+list-gemini-models:
+	docker compose exec worker python /app/scripts/list_gemini_models.py
 
 # Phase 5 — Seed test consent records and run all four agent tools
 seed-consent:
@@ -78,7 +89,11 @@ test-e2e:
 	docker compose exec server python /app/scripts/test_e2e.py
 
 demo-conflict:
-	docker compose exec server python /app/scripts/conflict_demo.py
+	docker compose exec worker python /app/scripts/conflict_demo.py
+
+# Phase 16 — verify rate limit kicks in. Override count: N=300 make test-rate-limit
+test-rate-limit:
+	docker compose exec -e N=$(or $(N),150) server python /app/scripts/test_rate_limit.py
 
 ps:
 	docker compose ps

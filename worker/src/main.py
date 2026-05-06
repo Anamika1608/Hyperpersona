@@ -23,6 +23,10 @@ def main() -> None:
         region=settings.bedrock_region,
         text_model=settings.bedrock_text_model,
         embed_model=settings.bedrock_embed_model,
+        gemini_api_key=settings.gemini_api_key,
+        gemini_text_model=settings.gemini_text_model,
+        gemini_embed_model=settings.gemini_embed_model,
+        gemini_embed_dim=settings.gemini_embed_dim,
     )
     vectors = make_vector_store(
         mode=settings.vector_mode,

@@ -3,3 +3,5 @@ redis>=5.2
 pydantic-settings>=2.6
 strands-agents>=0.1
 opensearch-py>=2.7
+tenacity>=9.0
+google-genai>=1.0

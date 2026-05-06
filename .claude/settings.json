@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Read(//c/cognizant-hack/**)"
+      "Read(//c/cognizant-hack/**)",
+      "Bash(git checkout *)"
     ],
     "additionalDirectories": [
       "C:\\cognizant-hack"

@@ -1,29 +1,23 @@
-"""ACE conflict-detection demo.
+"""ACE conflict-detection demo — runs against whatever LLM is configured.
 
-The mock analyzer always extracts the same canned fact, so to demonstrate
-conflict detection we seed contradictory facts about the same topic
-directly into OpenSearch with different timestamps + polarities:
+Seeds 3 facts directly into OpenSearch (bypassing the analyzer):
+  Old positive  (200d ago):  "Nike trail shoes" polarity=+1
+  Recent neg    (5d ago):    "Nike trail shoes" polarity=-1  ← should win
+  Recent pos    (3d ago):    "prefers waterproof gear" polarity=+1
 
-  Old fact (200 days ago):  "loves Nike trail shoes"        polarity=+1
-  Recent fact (5 days ago): "doesn't like Nike anymore"     polarity=-1
+Both Nike facts share text → same normalized key, so ACE groups them.
+With opposite polarities, ACE flags it as a conflict and keeps the
+more recent (-1) fact.
 
-We also seed a non-controversial fact for comparison:
-  Recent fact:              "prefers waterproof gear"       polarity=+1
+Embeds via whatever BEDROCK_MODE is set, so seed vectors align with
+the recommender's query embeddings. Run from the worker container so
+Gemini is available when BEDROCK_MODE=gemini.
 
-Then we hit /recommend and observe the trace:
-  - 3 facts retrieved
-  - "nike shoes" should appear in conflicts[]
-  - The recent (-1) fact should win the dedup, not the old (+1) one
-
-Run inside the server container so it can reach OpenSearch:
-  make demo-conflict
+Usage: make demo-conflict
 """
 
-import hashlib
 import json
-import math
 import os
-import time
 import urllib.error
 import urllib.request
 from datetime import datetime, timedelta, timezone
@@ -32,29 +26,15 @@ from uuid import uuid4
 
 from opensearchpy import OpenSearch
 
+from shared.bedrock import make_bedrock_client
+
+
 BASE_URL = os.getenv("HYPERPERSONA_BASE_URL", "http://server:8000")
 API_KEY = os.getenv("API_KEY", "test-key")
 OS_HOST = os.getenv("OPENSEARCH_HOST", "opensearch")
 OS_PORT = int(os.getenv("OPENSEARCH_PORT", "9200"))
 
 CUSTOMER = "demo_conflict_user"
-
-# Use the same hash-based mock embedder so similarities behave the same
-# way as in the rest of the system. Keep this in sync with
-# shared/bedrock.py:MockBedrockClient.embed.
-def mock_embed(text: str, dim: int = 1024) -> list[float]:
-    seed = hashlib.sha256(text.encode("utf-8")).digest()
-    out: list[float] = []
-    counter = 0
-    while len(out) < dim:
-        chunk = hashlib.sha256(seed + counter.to_bytes(4, "big")).digest()
-        for byte in chunk:
-            out.append((byte - 128) / 128.0)
-            if len(out) >= dim:
-                break
-        counter += 1
-    mag = math.sqrt(sum(x * x for x in out))
-    return [x / mag for x in out] if mag > 0 else out
 
 
 def _api_request(
@@ -79,6 +59,17 @@ def _api_request(
 
 
 def main() -> None:
+    mode = os.getenv("BEDROCK_MODE", "mock")
+    bedrock = make_bedrock_client(
+        mode=mode,
+        region=os.getenv("BEDROCK_REGION", "us-east-1"),
+        text_model=os.getenv("BEDROCK_TEXT_MODEL", "anthropic.claude-sonnet-4-5-20250929-v1:0"),
+        embed_model=os.getenv("BEDROCK_EMBED_MODEL", "amazon.titan-embed-text-v2:0"),
+        gemini_api_key=os.getenv("GEMINI_API_KEY", ""),
+        gemini_text_model=os.getenv("GEMINI_TEXT_MODEL", "gemini-2.5-flash"),
+        gemini_embed_model=os.getenv("GEMINI_EMBED_MODEL", "gemini-embedding-001"),
+        gemini_embed_dim=int(os.getenv("GEMINI_EMBED_DIM", "1024")),
+    )
     os_client = OpenSearch(
         hosts=[{"host": OS_HOST, "port": OS_PORT}],
         use_ssl=False,
@@ -86,17 +77,16 @@ def main() -> None:
     )
 
     print("=" * 64)
-    print("CONFLICT DEMO — seeding 3 facts directly into OpenSearch")
+    print(f"CONFLICT DEMO — mode={mode}")
     print("=" * 64)
 
-    # Set up consent so /recommend won't be blocked
     _api_request("POST", "/consent", {
         "customer_id": CUSTOMER,
         "scopes": ["personalization", "analytics"],
     })
     print(f"created consent for {CUSTOMER}")
 
-    # Wipe any prior demo state
+    # Wipe prior demo state for this customer
     os_client.delete_by_query(
         index="customer-facts",
         body={"query": {"term": {"customer_id": CUSTOMER}}},
@@ -105,19 +95,16 @@ def main() -> None:
 
     now = datetime.now(timezone.utc)
     facts = [
-        # Old positive: "loves Nike" 200 days ago
         {
-            "text": "loves Nike trail shoes",
+            "text": "Nike trail shoes",
             "polarity": 1,
             "timestamp": (now - timedelta(days=200)).isoformat(),
         },
-        # Recent negative: "doesn't like Nike" 5 days ago — this should win the dedup
         {
-            "text": "does not like Nike anymore",
+            "text": "Nike trail shoes",
             "polarity": -1,
             "timestamp": (now - timedelta(days=5)).isoformat(),
         },
-        # Recent neutral: unrelated topic, should pass through cleanly
         {
             "text": "prefers waterproof gear",
             "polarity": 1,
@@ -130,7 +117,7 @@ def main() -> None:
             index="customer-facts",
             id=str(uuid4()),
             body={
-                "vector": mock_embed(f["text"]),
+                "vector": bedrock.embed(f["text"]),
                 "customer_id": CUSTOMER,
                 "text": f["text"],
                 "source_event": "demo_seed",
@@ -140,34 +127,34 @@ def main() -> None:
             refresh="wait_for",
         )
         days_ago = (now - datetime.fromisoformat(f["timestamp"])).days
-        print(f"  seeded: {f['text']:40} polarity={f['polarity']:+d}  ({days_ago}d ago)")
+        print(f"  seeded: {f['text']:30} polarity={f['polarity']:+d}  ({days_ago}d ago)")
 
     print()
     print("=" * 64)
-    print("RUNNING /recommend WITH 'nike running shoes' AS QUERY")
+    print("RUNNING /recommend WITH 'looking for nike running shoes'")
     print("=" * 64)
 
     s, b = _api_request(
         "GET",
         "/recommend?" + urlencode({
             "customer_id": CUSTOMER,
-            "context": "nike running shoes",
+            "context": "looking for nike running shoes",
         }),
     )
     print(f"GET /recommend → {s}")
     print(f"  facts_retrieved : {b.get('facts_retrieved')}")
     print(f"  facts_used      : {b.get('facts_used')}")
     print(f"  conflicts       : {b.get('conflicts')}")
-    print(f"  offer (head)    : {(b.get('offer') or '')[:140]}")
+    print(f"  offer (head)    : {(b.get('offer') or '')[:240]}")
 
     print()
     if b.get("conflicts"):
         print(f"PASS — ACE detected conflicts: {b['conflicts']}")
-        print("       The more recent (negative) fact wins the dedup.")
+        print("       The more recent (-1) fact won the dedup.")
     else:
-        print("note: no conflicts surfaced. ACE threshold may be too strict for")
-        print("      mock embeddings — try lowering FACT_SCORE_THRESHOLD in")
-        print("      shared/ace_ranking.py to see the conflict surface.")
+        print("note: no conflicts surfaced. Possible causes:")
+        print("  - similarity below FACT_SCORE_THRESHOLD (0.12) — try real LLM mode")
+        print("  - normalize_key heuristic grouped them differently")
 
     # Tidy up
     _api_request("DELETE", f"/customer/{CUSTOMER}")

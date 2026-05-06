@@ -22,6 +22,7 @@ services:
       AWS_SECRET_ACCESS_KEY: local
       API_KEY: ${API_KEY:-test-key}
       TRACES_DB_PATH: /app/traces/agent_traces.db
+      RATE_LIMIT_PER_MINUTE: ${RATE_LIMIT_PER_MINUTE:-100}
     depends_on:
       - redis
       - dynamodb-local
@@ -54,6 +55,10 @@ services:
       BEDROCK_REGION: ${BEDROCK_REGION:-us-east-1}
       BEDROCK_TEXT_MODEL: ${BEDROCK_TEXT_MODEL:-anthropic.claude-sonnet-4-5-20250929-v1:0}
       BEDROCK_EMBED_MODEL: ${BEDROCK_EMBED_MODEL:-amazon.titan-embed-text-v2:0}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_TEXT_MODEL: ${GEMINI_TEXT_MODEL:-gemini-2.5-flash}
+      GEMINI_EMBED_MODEL: ${GEMINI_EMBED_MODEL:-gemini-embedding-001}
+      GEMINI_EMBED_DIM: ${GEMINI_EMBED_DIM:-1024}
       VECTOR_MODE: ${VECTOR_MODE:-opensearch}
       OPENSEARCH_HOST: ${OPENSEARCH_HOST:-opensearch}
       OPENSEARCH_PORT: ${OPENSEARCH_PORT:-9200}
@@ -87,7 +92,12 @@ services:
     container_name: hyperpersona-dynamodb-1
     ports:
       - "8001:8000"
-    command: -jar DynamoDBLocal.jar -sharedDb -inMemory
+    # -dbPath persists to /data/. Mounted on `dynamodb` volume so tables
+    # survive docker-compose restart (use `make clean` to wipe).
+    command: -jar DynamoDBLocal.jar -sharedDb -dbPath /data
+    volumes:
+      - dynamodb:/data
+    user: root  # default 'nobody' can't write to mounted volume
     restart: unless-stopped
 
   opensearch:
@@ -108,6 +118,8 @@ services:
       nofile:
         soft: 65536
         hard: 65536
+    volumes:
+      - opensearch:/usr/share/opensearch/data
     ports:
       - "9200:9200"
     healthcheck:
@@ -120,3 +132,5 @@ services:
 
 volumes:
   traces:
+  dynamodb:
+  opensearch:

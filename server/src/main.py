@@ -11,6 +11,7 @@ from shared.schemas import CustomerEvent, IngestEventRequest, Job
 
 from .config import settings
 from .middleware.auth import APIKeyMiddleware
+from .middleware.rate_limit import RateLimitMiddleware
 from .routes import consent as consent_route
 from .routes import customer as customer_route
 from .routes import jobs as jobs_route
@@ -22,6 +23,15 @@ log = logging.getLogger("server")
 
 app = FastAPI(title="HyperPersona Server", version="0.12.0")
 
+# Middleware order note: add_middleware adds to the OUTSIDE of the stack,
+# so the LAST add runs FIRST. We want auth → rate limit → endpoint, so
+# add rate-limit BEFORE auth in source order.
+_redis_for_rate_limit = make_redis(settings.redis_url)
+app.add_middleware(
+    RateLimitMiddleware,
+    redis_client=_redis_for_rate_limit,
+    limit_per_minute=settings.rate_limit_per_minute,
+)
 app.add_middleware(APIKeyMiddleware, api_key=settings.api_key)
 
 

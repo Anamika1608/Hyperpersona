@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     traces_db_path: str = "/app/traces/agent_traces.db"
     opensearch_host: str = "opensearch"
     opensearch_port: int = 9200
+    rate_limit_per_minute: int = 100
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
