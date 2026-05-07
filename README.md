@@ -2,6 +2,11 @@
 
 Three deployment units: **server** (FastAPI REST API), **worker** (Python job runner), and (later) **AgentCore Runtime** for the supervisor agent. See [plan.md](plan.md) for the full phase-by-phase build plan.
 
+## Presentation
+
+[Idea Title.pdf](https://github.com/user-attachments/files/27466420/Idea.Title.pdf)
+
+
 ## Phase 1 status
 
 Scaffold only — both Docker images build, both services boot, no business logic.
