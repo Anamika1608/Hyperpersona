@@ -193,8 +193,12 @@ main {
 .hero {
   position: relative;
   display: grid;
+  grid-template-areas:
+    "copy visual"
+    "actions visual";
   min-height: calc(100svh - 5rem);
   grid-template-columns: minmax(0, 0.86fr) minmax(28rem, 1.14fr);
+  grid-template-rows: auto auto;
   align-items: center;
   gap: 4rem;
   padding: 5.5rem 0 4.75rem;
@@ -236,6 +240,11 @@ main {
   min-width: 0;
 }
 
+.hero-copy {
+  grid-area: copy;
+  align-self: end;
+}
+
 .hero-subtitle {
   max-width: 42rem;
   margin: 1.35rem 0 0;
@@ -245,13 +254,16 @@ main {
 }
 
 .hero-actions {
+  grid-area: actions;
+  align-self: start;
   display: flex;
   flex-wrap: wrap;
   gap: 0.85rem;
-  margin-top: 2rem;
+  margin-top: -2rem;
 }
 
 .hero-stage {
+  grid-area: visual;
   position: relative;
   min-height: 43rem;
 }
@@ -260,6 +272,7 @@ main {
   position: relative;
   overflow: hidden;
   min-height: 36rem;
+  margin: 0;
   border: 1px solid rgba(229, 229, 229, 0.96);
   border-radius: 1.4rem;
   background: radial-gradient(ellipse 82% 78% at 50% 36%, #fdfbf7 0%, #f5f2ed 48%, #e9e3da 100%);
@@ -345,6 +358,9 @@ main {
 
 .preference-stack {
   display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .preference-row {
@@ -1010,7 +1026,12 @@ pre + pre {
   }
 
   .hero {
+    grid-template-areas:
+      "copy"
+      "visual"
+      "actions";
     min-height: auto;
+    gap: 2rem;
     padding-top: 4.2rem;
   }
 
@@ -1093,17 +1114,19 @@ pre + pre {
   }
 
   .hero {
-    padding: 2.6rem 0 3rem;
+    gap: 1.25rem;
+    padding: 2.15rem 0 3rem;
   }
 
   .hero h1 {
     max-width: 100%;
-    font-size: 2.7rem;
+    font-size: 2.45rem;
     line-height: 1.04;
   }
 
   .hero-subtitle {
-    font-size: 1rem;
+    font-size: 0.96rem;
+    line-height: 1.55;
   }
 
   .button {
@@ -1112,21 +1135,21 @@ pre + pre {
 
   .hero-actions {
     gap: 0.65rem;
-    margin-top: 1.55rem;
+    margin-top: 0.2rem;
   }
 
   .hero-product-card {
-    min-height: 28rem;
+    min-height: 23rem;
     border-radius: 1rem;
   }
 
   .hero-product-figure {
-    min-height: 20rem;
-    padding: 2rem 1rem 0.5rem;
+    min-height: 15.75rem;
+    padding: 1.2rem 1rem 0.35rem;
   }
 
   .hero-product-figure img {
-    width: min(23rem, 92%);
+    width: min(18rem, 86%);
   }
 
   .hero-product-copy {

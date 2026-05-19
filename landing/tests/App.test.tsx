@@ -66,6 +66,16 @@ describe("HyperPersona landing page", () => {
     }
   });
 
+  test("exposes the hero product preview and ranking to assistive technology", () => {
+    render(<App />);
+
+    expect(screen.getByRole("img", { name: /editorial storefront product/i })).toBeVisible();
+
+    const ranking = screen.getByRole("list", { name: /preference-first recommendation ranking/i });
+    expect(within(ranking).getAllByRole("listitem")).toHaveLength(3);
+    expect(within(ranking).getByText("Linen Overshirt")).toBeVisible();
+  });
+
   test("keeps navigation links and public proof copy honest", () => {
     render(<App />);
 

@@ -68,11 +68,11 @@ function Navbar() {
 function HeroVisual() {
   return (
     <SectionReveal className="hero-stage" delay={0.08}>
-      <div className="hero-product-card" aria-label="Personalized commerce preview">
-        <div className="hero-product-figure" aria-hidden>
+      <figure className="hero-product-card" aria-labelledby="hero-preview-title">
+        <div className="hero-product-figure">
           <img
             src="/media/hero-product-cutout.webp"
-            alt=""
+            alt="Editorial storefront product preview for a personalized HyperPersona recommendation rail"
             width={900}
             height={785}
             decoding="async"
@@ -81,28 +81,28 @@ function HeroVisual() {
         </div>
         <div className="hero-product-copy">
           <p className="mini-label">Live shopper</p>
-          <h2>Comparing breathable summer layers</h2>
+          <h2 id="hero-preview-title">Comparing breathable summer layers</h2>
           <span className="status-pill">personalization on</span>
         </div>
-      </div>
+      </figure>
 
       <div className="hero-signal-panel">
         <div className="panel-head">
           <span>Preference-first rank</span>
           <strong>trace ready</strong>
         </div>
-        <div className="preference-stack" aria-hidden>
+        <ol className="preference-stack" aria-label="Preference-first recommendation ranking">
           {heroRecommendations.map(([rank, product, reason, score]) => (
-            <div className="preference-row" key={product}>
+            <li className="preference-row" key={product}>
               <span>{rank}</span>
               <div>
                 <strong>{product}</strong>
                 <em>{reason}</em>
               </div>
               <b>{score}%</b>
-            </div>
+            </li>
           ))}
-        </div>
+        </ol>
         <p className="agent-line">
           <Sparkles size={16} aria-hidden />
           Verifier passed · 24 facts checked · 18ms trace span
@@ -122,16 +122,16 @@ function Hero() {
           HyperPersona gives startup commerce teams verified, real-time recommendations across search, browse,
           product pages, carts, and AI agents without building an ML platform in-house.
         </p>
-        <div className="hero-actions">
-          <a className="button primary" href="#waitlist">
-            Get Early Access <ArrowRight size={17} />
-          </a>
-          <a className="button secondary" href="#demo">
-            See It In Action <ArrowDown size={17} />
-          </a>
-        </div>
       </SectionReveal>
       <HeroVisual />
+      <SectionReveal className="hero-actions" delay={0.12}>
+        <a className="button primary" href="#waitlist">
+          Get Early Access <ArrowRight size={17} />
+        </a>
+        <a className="button secondary" href="#demo">
+          See It In Action <ArrowDown size={17} />
+        </a>
+      </SectionReveal>
     </section>
   );
 }
