@@ -66,8 +66,10 @@ describe("HyperPersona landing page", () => {
       "https://github.com/Anamika1608/Hyperpersona",
     );
     expect(screen.queryByText(/under 10 minutes/i)).not.toBeInTheDocument();
-    expect(screen.getByText("Shopify-ready")).toBeVisible();
-    expect(screen.getByText("WooCommerce-ready")).toBeVisible();
+    expect(screen.getByText("Product catalog")).toBeVisible();
+    expect(screen.getByText("Storefront rails")).toBeVisible();
+    expect(screen.queryByText(/shopify-ready/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/woocommerce-ready/i)).not.toBeInTheDocument();
     expect(screen.queryByTestId("section-Pricing")).not.toBeInTheDocument();
   });
 
@@ -92,13 +94,19 @@ describe("HyperPersona landing page", () => {
 
     await user.click(screen.getByRole("button", { name: /play hyperpersona demo/i }));
     const closeButton = screen.getByRole("button", { name: /close video dialog/i });
+    const video = screen.getByText(/your browser does not support the video tag/i).closest("video");
+
+    expect(video).toBeInTheDocument();
     expect(closeButton).toHaveFocus();
+
+    await user.tab();
+    expect(video).toHaveFocus();
 
     await user.tab();
     expect(closeButton).toHaveFocus();
 
     await user.tab({ shift: true });
-    expect(closeButton).toHaveFocus();
+    expect(video).toHaveFocus();
   });
 
   test("captures waitlist email locally without a network dependency", async () => {

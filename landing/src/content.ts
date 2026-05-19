@@ -41,11 +41,11 @@ export type TrustItem = {
 };
 
 export const trustItems: TrustItem[] = [
-  { icon: PackageCheck, label: "Shopify-ready" },
-  { icon: Boxes, label: "WooCommerce-ready" },
-  { icon: Braces, label: "REST APIs" },
+  { icon: PackageCheck, label: "Product catalog" },
+  { icon: Boxes, label: "Storefront rails" },
+  { icon: Braces, label: "REST events" },
   { icon: ServerCog, label: "MCP Server" },
-  { icon: Workflow, label: "Custom storefronts" },
+  { icon: Workflow, label: "Consent-aware flows" },
 ];
 
 export const howItWorks: Step[] = [
@@ -154,8 +154,7 @@ await session.call_tool("get_recommendation_trace", {
 export const footerLinks = [
   { label: "Docs", href: "#integrations" },
   { label: "GitHub", href: "https://github.com/Anamika1608/Hyperpersona" },
-  { label: "Privacy", href: "#trust" },
-  { label: "Terms", href: "#trust" },
+  { label: "Demo", href: "#demo" },
 ];
 
 export const proofPoints = [

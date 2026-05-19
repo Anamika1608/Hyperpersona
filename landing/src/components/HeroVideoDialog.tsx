@@ -10,6 +10,7 @@ export function HeroVideoDialog({ videoSrc }: HeroVideoDialogProps) {
   const [open, setOpen] = useState(false);
   const titleId = useId();
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
   const triggerButtonRef = useRef<HTMLButtonElement>(null);
   const reduceMotion = useReducedMotion();
 
@@ -24,8 +25,25 @@ export function HeroVideoDialog({ videoSrc }: HeroVideoDialogProps) {
       }
 
       if (event.key === "Tab") {
-        event.preventDefault();
-        closeButtonRef.current?.focus();
+        const focusable = Array.from(
+          dialogRef.current?.querySelectorAll<HTMLElement>(
+            'button, video[controls], a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+          ) ?? [],
+        ).filter((element) => !element.hasAttribute("disabled") && element.tabIndex >= 0);
+
+        if (focusable.length === 0) return;
+
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        const active = document.activeElement;
+
+        if (event.shiftKey && active === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && active === last) {
+          event.preventDefault();
+          first.focus();
+        }
       }
     };
 
@@ -98,6 +116,7 @@ export function HeroVideoDialog({ videoSrc }: HeroVideoDialogProps) {
               aria-modal="true"
               aria-labelledby={titleId}
               className="video-dialog"
+              ref={dialogRef}
               initial={reduceMotion ? false : { opacity: 0, y: 24, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={reduceMotion ? undefined : { opacity: 0, y: 16, scale: 0.98 }}
@@ -114,7 +133,7 @@ export function HeroVideoDialog({ videoSrc }: HeroVideoDialogProps) {
                   <X size={18} />
                 </button>
               </div>
-              <video className="dialog-video" controls autoPlay playsInline>
+              <video className="dialog-video" controls autoPlay playsInline tabIndex={0}>
                 <source src={videoSrc} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>

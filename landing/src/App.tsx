@@ -49,8 +49,8 @@ function Navbar() {
         <span>HyperPersona</span>
       </a>
       <nav aria-label="Primary navigation">
-        <a href="#features">Features</a>
         <a href="#how-it-works">How It Works</a>
+        <a href="#features">Features</a>
         <a href="#integrations">Integrations</a>
       </nav>
       <a className="nav-cta" href="#waitlist">
@@ -308,10 +308,10 @@ function IntegrationSection() {
           <span>MCP Server</span>
           <span>Webhook-friendly</span>
         </div>
-        <pre aria-label="REST integration code snippet">
+        <pre aria-label="REST integration code snippet" tabIndex={0}>
           <code>{restSnippet}</code>
         </pre>
-        <pre aria-label="MCP integration code snippet">
+        <pre aria-label="MCP integration code snippet" tabIndex={0}>
           <code>{mcpSnippet}</code>
         </pre>
       </SectionReveal>
