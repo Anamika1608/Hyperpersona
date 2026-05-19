@@ -1,0 +1,108 @@
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { Play, X } from "lucide-react";
+import { useEffect, useId, useState } from "react";
+
+type HeroVideoDialogProps = {
+  videoSrc: string;
+};
+
+export function HeroVideoDialog({ videoSrc }: HeroVideoDialogProps) {
+  const [open, setOpen] = useState(false);
+  const titleId = useId();
+  const reduceMotion = useReducedMotion();
+
+  useEffect(() => {
+    if (!open) return undefined;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [open]);
+
+  return (
+    <>
+      <button
+        type="button"
+        aria-label="Play HyperPersona demo"
+        className="video-shell"
+        onClick={() => setOpen(true)}
+      >
+        <span className="video-orbit" aria-hidden />
+        <span className="video-frame">
+          <span className="video-toolbar" aria-hidden>
+            <span />
+            <span />
+            <span />
+          </span>
+          <span className="video-dashboard" aria-hidden>
+            <span className="rank-panel">
+              <span className="mini-label">Preference-first search</span>
+              {["linen overshirt", "moss travel pant", "cotton utility tote"].map((item, index) => (
+                <span className="rank-row" key={item}>
+                  <strong>{index + 1}</strong>
+                  <span>{item}</span>
+                  <em>{index === 0 ? "96%" : index === 1 ? "88%" : "74%"}</em>
+                </span>
+              ))}
+            </span>
+            <span className="trace-panel">
+              <span className="mini-label">Trace</span>
+              <span>privacy_check · ok</span>
+              <span>retrieve_facts · 18ms</span>
+              <span>verify_recommendation · valid</span>
+            </span>
+          </span>
+          <span className="play-button" aria-hidden>
+            <Play size={28} fill="currentColor" />
+          </span>
+        </span>
+      </button>
+
+      <AnimatePresence>
+        {open ? (
+          <motion.div
+            className="dialog-backdrop"
+            role="presentation"
+            onMouseDown={(event) => {
+              if (event.target === event.currentTarget) setOpen(false);
+            }}
+            initial={reduceMotion ? false : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={reduceMotion ? undefined : { opacity: 0 }}
+          >
+            <motion.div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby={titleId}
+              className="video-dialog"
+              initial={reduceMotion ? false : { opacity: 0, y: 24, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={reduceMotion ? undefined : { opacity: 0, y: 16, scale: 0.98 }}
+              transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <div className="dialog-head">
+                <h3 id={titleId}>HyperPersona product demo</h3>
+                <button type="button" onClick={() => setOpen(false)} aria-label="Close video dialog">
+                  <X size={18} />
+                </button>
+              </div>
+              <video className="dialog-video" controls autoPlay playsInline>
+                <source src={videoSrc} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </motion.div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
+    </>
+  );
+}
