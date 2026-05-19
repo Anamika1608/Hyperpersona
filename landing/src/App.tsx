@@ -117,7 +117,7 @@ function Hero() {
     <section id="hero" className="hero section-shell" data-testid="section-Hero" aria-labelledby="hero-title">
       <SectionReveal className="hero-copy">
         <p className="eyebrow">Agentic ecommerce personalization</p>
-        <h1 id="hero-title">Recommendations that know what each shopper wants next.</h1>
+        <h1 id="hero-title">Product rails that feel like mind reading.</h1>
         <p className="hero-subtitle">
           HyperPersona gives startup commerce teams verified, real-time recommendations across search, browse,
           product pages, carts, and AI agents without building an ML platform in-house.

@@ -194,9 +194,9 @@ main {
   position: relative;
   display: grid;
   min-height: calc(100svh - 5rem);
-  grid-template-columns: minmax(0, 0.92fr) minmax(24rem, 1.08fr);
+  grid-template-columns: minmax(0, 0.86fr) minmax(28rem, 1.14fr);
   align-items: center;
-  gap: 5rem;
+  gap: 4rem;
   padding: 5.5rem 0 4.75rem;
 }
 
@@ -224,9 +224,11 @@ main {
 }
 
 .hero h1 {
-  max-width: 11ch;
+  max-width: 10.7ch;
   margin-top: 1rem;
-  font-size: 5.8rem;
+  overflow-wrap: break-word;
+  font-size: 4.55rem;
+  text-wrap: balance;
 }
 
 .hero-copy,
@@ -288,6 +290,7 @@ main {
 
 .hero-product-copy h2 {
   grid-column: 1;
+  max-width: 13ch;
   margin: 0.38rem 0 0;
   font-family: var(--font-display);
   font-size: 1.65rem;
@@ -980,7 +983,7 @@ pre + pre {
   }
 
   .hero h1 {
-    font-size: 4.9rem;
+    font-size: 4.1rem;
   }
 
   .section-heading h2,
@@ -1012,7 +1015,8 @@ pre + pre {
   }
 
   .hero h1 {
-    max-width: 12ch;
+    max-width: 100%;
+    font-size: 4.6rem;
   }
 
   .hero-stage {
@@ -1025,6 +1029,10 @@ pre + pre {
     bottom: auto;
     width: calc(100% - 2rem);
     margin: -3rem auto 0;
+  }
+
+  .hero-product-copy h2 {
+    max-width: none;
   }
 
   .step-grid,
@@ -1085,12 +1093,12 @@ pre + pre {
   }
 
   .hero {
-    padding: 3.2rem 0 3rem;
+    padding: 2.6rem 0 3rem;
   }
 
   .hero h1 {
     max-width: 100%;
-    font-size: 3.15rem;
+    font-size: 2.7rem;
     line-height: 1.04;
   }
 
@@ -1100,6 +1108,11 @@ pre + pre {
 
   .button {
     width: 100%;
+  }
+
+  .hero-actions {
+    gap: 0.65rem;
+    margin-top: 1.55rem;
   }
 
   .hero-product-card {
