@@ -52,7 +52,6 @@ function Navbar() {
         <a href="#features">Features</a>
         <a href="#how-it-works">How It Works</a>
         <a href="#integrations">Integrations</a>
-        <a href="#pricing">Pricing</a>
       </nav>
       <a className="nav-cta" href="#waitlist">
         Get Early Access
@@ -285,7 +284,7 @@ function IntegrationSection() {
     >
       <SectionReveal className="integration-copy">
         <p className="eyebrow">For startup ecommerce teams</p>
-        <h2 id="integrations-title">Plug Into Your Store in Minutes</h2>
+        <h2 id="integrations-title">Plug Into Your Store Without Rebuilding It</h2>
         <p>
           Keep your current frontend, checkout, catalog, and auth. Add a thin server-side client that streams
           events and asks HyperPersona for ranked rails, complements, traces, and LLM-ready explanations.
@@ -322,14 +321,14 @@ function IntegrationSection() {
 
 function ProofStrip() {
   return (
-    <section className="proof-strip" aria-label="Platform proof points">
+    <div className="proof-strip" role="list" aria-label="Platform proof points">
       {proofPoints.map(({ icon: Icon, label }) => (
-        <div key={label}>
+        <div key={label} role="listitem">
           <Icon size={16} aria-hidden />
           <span>{label}</span>
         </div>
       ))}
-    </section>
+    </div>
   );
 }
 
@@ -372,7 +371,7 @@ function WaitlistSection() {
             You're on the early access list, {submittedEmail}.
           </p>
         ) : null}
-        <span className="trust-line">No credit card required. Set up in under 10 minutes.</span>
+        <span className="trust-line">No credit card required for early access requests.</span>
       </SectionReveal>
     </section>
   );

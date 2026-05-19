@@ -13,6 +13,8 @@
   --accent: #c7835a;
   --accent-strong: #f0a56f;
   --moss: #8fa493;
+  --teal: #7bc6ba;
+  --violet: #9f91d8;
   --rose: #b47b77;
   --shadow: rgba(0, 0, 0, 0.42);
   --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
@@ -40,7 +42,8 @@ body {
   min-height: 100vh;
   background:
     radial-gradient(circle at 12% 0%, rgba(199, 131, 90, 0.2), transparent 27rem),
-    radial-gradient(circle at 84% 12%, rgba(143, 164, 147, 0.16), transparent 30rem),
+    radial-gradient(circle at 84% 12%, rgba(123, 198, 186, 0.16), transparent 30rem),
+    radial-gradient(circle at 72% 68%, rgba(159, 145, 216, 0.1), transparent 34rem),
     linear-gradient(180deg, #11100e 0%, #181512 42%, #0f0e0d 100%);
 }
 
@@ -111,7 +114,7 @@ main {
   font-family: var(--font-display);
   font-size: clamp(1.3rem, 2vw, 1.7rem);
   font-weight: 500;
-  letter-spacing: -0.055em;
+  letter-spacing: 0;
 }
 
 .wordmark-mark {
@@ -226,7 +229,7 @@ main {
   color: var(--accent-strong);
   font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0;
   text-transform: uppercase;
 }
 
@@ -236,14 +239,19 @@ main {
   margin: 0;
   font-family: var(--font-display);
   font-weight: 400;
-  letter-spacing: -0.052em;
+  letter-spacing: 0;
   line-height: 0.98;
 }
 
 .hero h1 {
   max-width: 11ch;
   margin-top: 1rem;
-  font-size: clamp(4.2rem, 9vw, 8.6rem);
+  font-size: clamp(4rem, 7.5vw, 7rem);
+}
+
+.hero-copy,
+.hero-product {
+  min-width: 0;
 }
 
 .hero-subtitle {
@@ -305,7 +313,7 @@ main {
   font-family: var(--font-display);
   font-size: 1.3rem;
   font-weight: 500;
-  letter-spacing: -0.04em;
+  letter-spacing: 0;
 }
 
 .status-pill {
@@ -670,7 +678,7 @@ main {
   font-family: var(--font-display);
   font-size: clamp(1.55rem, 2.4vw, 2.2rem);
   font-weight: 500;
-  letter-spacing: -0.045em;
+  letter-spacing: 0;
   line-height: 1.05;
 }
 
@@ -741,7 +749,7 @@ main {
   font-family: var(--font-display);
   font-size: 1.8rem;
   font-weight: 500;
-  letter-spacing: -0.05em;
+  letter-spacing: 0;
 }
 
 .pair-list {
@@ -759,7 +767,7 @@ main {
   font-family: var(--font-display);
   font-size: clamp(2.5rem, 5vw, 5rem);
   font-weight: 400;
-  letter-spacing: -0.055em;
+  letter-spacing: 0;
   line-height: 0.98;
 }
 
@@ -987,7 +995,9 @@ pre + pre {
   }
 
   .hero h1 {
-    font-size: clamp(3.25rem, 18vw, 4.8rem);
+    max-width: 100%;
+    font-size: clamp(2.45rem, 11vw, 3.1rem);
+    line-height: 1.04;
   }
 
   .hero-subtitle {
@@ -1014,6 +1024,10 @@ pre + pre {
   .video-frame {
     min-height: 25rem;
     border-radius: 22px;
+  }
+
+  .video-orbit {
+    inset: 0;
   }
 
   .video-dashboard {

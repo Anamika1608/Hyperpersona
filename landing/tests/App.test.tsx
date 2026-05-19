@@ -22,15 +22,17 @@ describe("HyperPersona landing page", () => {
     render(<App />);
 
     const markers = expectedSections.map((name) => screen.getByTestId(`section-${name}`));
-    const positions = markers.map((element) => element.compareDocumentPosition(document.body));
+    const markerNames = Array.from(document.querySelectorAll("[data-testid^='section-']")).map((element) =>
+      element.getAttribute("data-testid")?.replace("section-", ""),
+    );
 
     expect(markers).toHaveLength(expectedSections.length);
+    expect(markerNames).toEqual(expectedSections);
     for (let index = 0; index < markers.length - 1; index += 1) {
       expect(markers[index].compareDocumentPosition(markers[index + 1])).toBe(
         Node.DOCUMENT_POSITION_FOLLOWING,
       );
     }
-    expect(positions.every((position) => position === Node.DOCUMENT_POSITION_CONTAINS)).toBe(false);
   });
 
   test("includes every required feature card with product-specific copy", () => {
@@ -49,15 +51,54 @@ describe("HyperPersona landing page", () => {
     }
   });
 
+  test("keeps navigation links and public proof copy honest", () => {
+    render(<App />);
+
+    const links = screen.getAllByRole("link");
+    for (const link of links) {
+      const href = link.getAttribute("href");
+      if (!href?.startsWith("#")) continue;
+      expect(document.querySelector(href)).not.toBeNull();
+    }
+
+    expect(screen.getByRole("link", { name: "GitHub" })).toHaveAttribute(
+      "href",
+      "https://github.com/Anamika1608/Hyperpersona",
+    );
+    expect(screen.queryByText(/under 10 minutes/i)).not.toBeInTheDocument();
+    expect(screen.getByText("Shopify-ready")).toBeVisible();
+    expect(screen.getByText("WooCommerce-ready")).toBeVisible();
+    expect(screen.queryByTestId("section-Pricing")).not.toBeInTheDocument();
+  });
+
   test("opens and closes the video dialog with keyboard support", async () => {
     const user = userEvent.setup();
     render(<App />);
 
-    await user.click(screen.getByRole("button", { name: /play hyperpersona demo/i }));
+    const playButton = screen.getByRole("button", { name: /play hyperpersona demo/i });
+
+    await user.click(playButton);
     expect(screen.getByRole("dialog", { name: /hyperpersona product demo/i })).toBeVisible();
+    expect(screen.getByRole("button", { name: /close video dialog/i })).toHaveFocus();
 
     await user.keyboard("{Escape}");
     expect(screen.queryByRole("dialog", { name: /hyperpersona product demo/i })).not.toBeInTheDocument();
+    expect(playButton).toHaveFocus();
+  });
+
+  test("keeps keyboard focus inside the open video dialog", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.click(screen.getByRole("button", { name: /play hyperpersona demo/i }));
+    const closeButton = screen.getByRole("button", { name: /close video dialog/i });
+    expect(closeButton).toHaveFocus();
+
+    await user.tab();
+    expect(closeButton).toHaveFocus();
+
+    await user.tab({ shift: true });
+    expect(closeButton).toHaveFocus();
   });
 
   test("captures waitlist email locally without a network dependency", async () => {

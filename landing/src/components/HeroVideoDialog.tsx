@@ -1,6 +1,6 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Play, X } from "lucide-react";
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 
 type HeroVideoDialogProps = {
   videoSrc: string;
@@ -9,22 +9,35 @@ type HeroVideoDialogProps = {
 export function HeroVideoDialog({ videoSrc }: HeroVideoDialogProps) {
   const [open, setOpen] = useState(false);
   const titleId = useId();
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const triggerButtonRef = useRef<HTMLButtonElement>(null);
   const reduceMotion = useReducedMotion();
 
   useEffect(() => {
     if (!open) return undefined;
+    const triggerButton = triggerButtonRef.current;
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
+      if (event.key === "Escape") {
+        setOpen(false);
+        return;
+      }
+
+      if (event.key === "Tab") {
+        event.preventDefault();
+        closeButtonRef.current?.focus();
+      }
     };
 
     document.addEventListener("keydown", onKeyDown);
     const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    closeButtonRef.current?.focus();
 
     return () => {
       document.removeEventListener("keydown", onKeyDown);
       document.body.style.overflow = originalOverflow;
+      triggerButton?.focus();
     };
   }, [open]);
 
@@ -34,6 +47,7 @@ export function HeroVideoDialog({ videoSrc }: HeroVideoDialogProps) {
         type="button"
         aria-label="Play HyperPersona demo"
         className="video-shell"
+        ref={triggerButtonRef}
         onClick={() => setOpen(true)}
       >
         <span className="video-orbit" aria-hidden />
@@ -91,7 +105,12 @@ export function HeroVideoDialog({ videoSrc }: HeroVideoDialogProps) {
             >
               <div className="dialog-head">
                 <h3 id={titleId}>HyperPersona product demo</h3>
-                <button type="button" onClick={() => setOpen(false)} aria-label="Close video dialog">
+                <button
+                  type="button"
+                  ref={closeButtonRef}
+                  onClick={() => setOpen(false)}
+                  aria-label="Close video dialog"
+                >
                   <X size={18} />
                 </button>
               </div>

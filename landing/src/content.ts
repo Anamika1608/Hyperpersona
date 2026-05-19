@@ -41,8 +41,8 @@ export type TrustItem = {
 };
 
 export const trustItems: TrustItem[] = [
-  { icon: PackageCheck, label: "Shopify" },
-  { icon: Boxes, label: "WooCommerce" },
+  { icon: PackageCheck, label: "Shopify-ready" },
+  { icon: Boxes, label: "WooCommerce-ready" },
   { icon: Braces, label: "REST APIs" },
   { icon: ServerCog, label: "MCP Server" },
   { icon: Workflow, label: "Custom storefronts" },
@@ -115,7 +115,7 @@ export const integrationBadges = [
   { icon: Braces, label: "REST" },
   { icon: ServerCog, label: "MCP" },
   { icon: DatabaseZap, label: "DynamoDB" },
-  { icon: ShieldCheck, label: "DPDP / GDPR" },
+  { icon: ShieldCheck, label: "Consent controls" },
   { icon: LockKeyhole, label: "JWT" },
   { icon: ChartNoAxesCombined, label: "Traces" },
 ];
@@ -153,7 +153,7 @@ await session.call_tool("get_recommendation_trace", {
 
 export const footerLinks = [
   { label: "Docs", href: "#integrations" },
-  { label: "GitHub", href: "https://github.com/" },
+  { label: "GitHub", href: "https://github.com/Anamika1608/Hyperpersona" },
   { label: "Privacy", href: "#trust" },
   { label: "Terms", href: "#trust" },
 ];
