@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, test } from "vitest";
@@ -18,6 +20,19 @@ const expectedSections = [
 ];
 
 describe("HyperPersona landing page", () => {
+  test("uses the apps/web editorial commerce theme instead of a dark SaaS shell", () => {
+    const css = readFileSync(resolve(__dirname, "../src/styles.css"), "utf8");
+
+    expect(css).toContain("--canvas: #f7f1e8");
+    expect(css).toContain("--hero-canvas: #f5f2ed");
+    expect(css).toContain("--surface-strong: #fffdf9");
+    expect(css).toContain("--ink: #221c17");
+    expect(css).toContain("--accent: #b86f4d");
+    expect(css).toContain("--success: #5e6f62");
+    expect(css).not.toContain("--canvas: #11100e");
+    expect(css).not.toContain("linear-gradient(180deg, #11100e");
+  });
+
   test("renders the required sections in the requested order", () => {
     render(<App />);
 
@@ -49,6 +64,16 @@ describe("HyperPersona landing page", () => {
     ]) {
       expect(within(featureSection).getByRole("heading", { name: title })).toBeVisible();
     }
+  });
+
+  test("exposes the hero product preview and ranking to assistive technology", () => {
+    render(<App />);
+
+    expect(screen.getByRole("img", { name: /editorial storefront product/i })).toBeVisible();
+
+    const ranking = screen.getByRole("list", { name: /preference-first recommendation ranking/i });
+    expect(within(ranking).getAllByRole("listitem")).toHaveLength(3);
+    expect(within(ranking).getByText("Linen Overshirt")).toBeVisible();
   });
 
   test("keeps navigation links and public proof copy honest", () => {

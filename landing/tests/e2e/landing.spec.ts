@@ -4,7 +4,7 @@ test.describe("HyperPersona landing page", () => {
   test("desktop page renders the conversion path and video dialog", async ({ page }) => {
     await page.goto("/");
 
-    await expect(page.getByRole("heading", { name: /recommendations that know what each shopper wants next/i })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /product rails that feel like mind reading/i })).toBeVisible();
     await expect(page.getByRole("link", { name: /get early access/i }).first()).toBeVisible();
     await expect(page.getByRole("heading", { name: /see hyperpersona in action/i })).toBeVisible();
 
@@ -24,5 +24,22 @@ test.describe("HyperPersona landing page", () => {
     await page.getByLabel("Work email").fill("mobile@example.com");
     await page.getByRole("button", { name: /^get early access$/i }).click();
     await expect(page.getByText(/You're on the early access list/i)).toBeVisible();
+  });
+
+  test("narrow mobile keeps the editorial product preview in the first viewport", async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 812 });
+    await page.goto("/");
+
+    const productPreview = page.locator(".hero-product-card");
+    await expect(page.getByRole("img", { name: /editorial storefront product/i })).toBeVisible();
+    await expect(productPreview).toBeVisible();
+
+    const box = await productPreview.boundingBox();
+    expect(box?.y).toBeLessThan(620);
+
+    const canvas = await page.evaluate(() =>
+      getComputedStyle(document.documentElement).getPropertyValue("--canvas").trim(),
+    );
+    expect(canvas).toBe("#f7f1e8");
   });
 });
