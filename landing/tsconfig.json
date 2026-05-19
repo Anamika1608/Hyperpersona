@@ -1,0 +1,10 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "moduleResolution": "Bundler",
+    "types": ["vite/client", "vitest/globals", "node"],
+    "tsBuildInfoFile": "./node_modules/.vite/tsconfig.tsbuildinfo"
+  },
+  "include": ["src", "tests", "playwright.config.ts", "vite.config.ts", "eslint.config.js"]
+}

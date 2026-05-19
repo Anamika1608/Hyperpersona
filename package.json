@@ -2,13 +2,19 @@
   "name": "hyperpersona",
   "private": true,
   "workspaces": [
-    "apps/*"
+    "apps/*",
+    "landing"
   ],
   "scripts": {
     "dev:web": "npm --workspace @hyperpersona/web run dev",
     "build:web": "npm --workspace @hyperpersona/web run build",
     "lint:web": "npm --workspace @hyperpersona/web run lint",
-    "test:web": "npm --workspace @hyperpersona/web run test -- --run"
+    "test:web": "npm --workspace @hyperpersona/web run test -- --run",
+    "dev:landing": "npm --workspace @hyperpersona/landing run dev",
+    "build:landing": "npm --workspace @hyperpersona/landing run build",
+    "lint:landing": "npm --workspace @hyperpersona/landing run lint",
+    "test:landing": "npm --workspace @hyperpersona/landing run test -- --run",
+    "test:e2e:landing": "npm --workspace @hyperpersona/landing run test:e2e"
   },
   "msw": {
     "workerDirectory": [
