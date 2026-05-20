@@ -34,10 +34,12 @@ import {
 } from "./content";
 
 const heroRecommendations = [
-  ["01", "Linen Overshirt", "breathable fabric match", "96"],
-  ["02", "Moss Travel Pant", "saved similar silhouettes", "88"],
-  ["03", "Cotton Utility Tote", "pairs with current cart", "74"],
+  ["view_item", "SKU_1042", "category, price, session intent"],
+  ["search", "query=summer layers", "text intent plus profile memory"],
+  ["add_to_cart", "cart_item", "pair-up context and affinity"],
 ];
+
+const heroProof = ["REST API", "MCP Server", "Real-time signals", "Traceable decisions"];
 
 function IconBadge({ icon: Icon }: { icon: LucideIcon }) {
   return (
@@ -68,46 +70,53 @@ function Navbar() {
 function HeroVisual() {
   return (
     <SectionReveal className="hero-stage" delay={0.08}>
-      <figure className="hero-product-card" aria-labelledby="hero-preview-title">
-        <div className="hero-product-figure">
-          <img
-            src="/media/hero-product-cutout.webp"
-            alt="Editorial storefront product preview for a personalized HyperPersona recommendation rail"
-            width={900}
-            height={785}
-            decoding="async"
-            fetchPriority="high"
-          />
+      <section className="hero-workflow" aria-label="HyperPersona recommendation workflow preview">
+        <div className="workflow-topbar">
+          <span>HyperPersona Cloud</span>
+          <strong>live personalization</strong>
         </div>
-        <div className="hero-product-copy">
-          <p className="mini-label">Live shopper</p>
-          <h2 id="hero-preview-title">Comparing breathable summer layers</h2>
-          <span className="status-pill">personalization on</span>
-        </div>
-      </figure>
+        <div className="workflow-grid">
+          <div className="workflow-panel">
+            <p className="mini-label">Incoming signals</p>
+            <ol className="workflow-list" aria-label="Incoming commerce events">
+              {heroRecommendations.map(([event, value, context]) => (
+                <li key={event}>
+                  <span>{event}</span>
+                  <strong>{value}</strong>
+                  <em>{context}</em>
+                </li>
+              ))}
+            </ol>
+          </div>
 
-      <div className="hero-signal-panel">
-        <div className="panel-head">
-          <span>Preference-first rank</span>
-          <strong>trace ready</strong>
+          <div className="workflow-panel workflow-panel-featured">
+            <p className="mini-label">Personalization engine</p>
+            <div className="engine-core" aria-hidden>
+              <Sparkles size={22} />
+            </div>
+            <ul className="engine-list" aria-label="Personalization engine steps">
+              <li>Preference memory</li>
+              <li>Real-time ranker</li>
+              <li>Pair-up affinity</li>
+              <li>Verifier + traces</li>
+            </ul>
+          </div>
+
+          <div className="workflow-panel">
+            <p className="mini-label">Storefront outputs</p>
+            <div className="output-stack">
+              <code>/recommend</code>
+              <code>/recommend/complement</code>
+              <code>trace_id: hp_run_4271</code>
+            </div>
+            <p className="workflow-note">Ranked results return with reasons, confidence, and observable decisions.</p>
+          </div>
         </div>
-        <ol className="preference-stack" aria-label="Preference-first recommendation ranking">
-          {heroRecommendations.map(([rank, product, reason, score]) => (
-            <li className="preference-row" key={product}>
-              <span>{rank}</span>
-              <div>
-                <strong>{product}</strong>
-                <em>{reason}</em>
-              </div>
-              <b>{score}%</b>
-            </li>
-          ))}
-        </ol>
         <p className="agent-line">
           <Sparkles size={16} aria-hidden />
-          Verifier passed · 24 facts checked · 18ms trace span
+          Decision trace ready · consent-aware · no batch lag
         </p>
-      </div>
+      </section>
     </SectionReveal>
   );
 }
@@ -117,20 +126,31 @@ function Hero() {
     <section id="hero" className="hero section-shell" data-testid="section-Hero" aria-labelledby="hero-title">
       <SectionReveal className="hero-copy">
         <p className="eyebrow">Agentic ecommerce personalization</p>
-        <h1 id="hero-title">Product rails that feel like mind reading.</h1>
+        <h1 id="hero-title">
+          <span>The personalization</span>{" "}
+          <span>engine for</span>{" "}
+          <span>startup stores.</span>
+        </h1>
         <p className="hero-subtitle">
-          HyperPersona gives startup commerce teams verified, real-time recommendations across search, browse,
-          product pages, carts, and AI agents without building an ML platform in-house.
+          HyperPersona gives e-commerce startups hyper-personalized search, browse, product page, and cart
+          recommendations in real time without building an ML team.
         </p>
       </SectionReveal>
       <HeroVisual />
       <SectionReveal className="hero-actions" delay={0.12}>
-        <a className="button primary" href="#waitlist">
-          Get Early Access <ArrowRight size={17} />
-        </a>
-        <a className="button secondary" href="#demo">
-          See It In Action <ArrowDown size={17} />
-        </a>
+        <div className="hero-button-row">
+          <a className="button primary" href="#waitlist">
+            Get Early Access <ArrowRight size={17} />
+          </a>
+          <a className="button secondary" href="#demo">
+            See Demo <ArrowDown size={17} />
+          </a>
+        </div>
+        <ul className="hero-proof-row" aria-label="Hero platform capabilities">
+          {heroProof.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
       </SectionReveal>
     </section>
   );
@@ -257,12 +277,12 @@ function RecommendationDeepDive() {
           <div className="search-visual" aria-label="Preference-first search result diagram">
             <div className="search-box">
               <Search size={15} aria-hidden />
-              <span>summer layers</span>
+              <span>query="summer layers"</span>
             </div>
             {[
-              ["#1", "Linen Overshirt", "breathable fabric match"],
-              ["#2", "Utility Travel Pant", "saved similar silhouette"],
-              ["#3", "Cotton Camp Shirt", "price sensitivity match"],
+              ["#1", "sku_1042", "profile preference match"],
+              ["#2", "sku_2088", "session intent match"],
+              ["#3", "sku_3190", "price sensitivity match"],
             ].map(([rank, item, reason], index) => (
               <div className={`result-row ${index === 0 ? "active" : ""}`} key={item}>
                 <b>{rank}</b>
@@ -286,10 +306,10 @@ function RecommendationDeepDive() {
             <div className="product-slab">
               <ShoppingBag size={17} aria-hidden />
               <span>Cart anchor</span>
-              <strong>Highland Overshirt</strong>
+              <strong>cart_item</strong>
             </div>
             <div className="pair-list">
-              {["Moss Travel Pant", "Cotton Utility Tote", "Weatherproof Cap"].map((item, index) => (
+              {["sku_4410", "sku_1187", "sku_7724"].map((item, index) => (
                 <div key={item}>
                   <MousePointer2 size={14} aria-hidden />
                   <span>{item}</span>
