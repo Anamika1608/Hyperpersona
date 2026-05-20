@@ -4,7 +4,9 @@ test.describe("HyperPersona landing page", () => {
   test("desktop page renders the conversion path and video dialog", async ({ page }) => {
     await page.goto("/");
 
-    await expect(page.getByRole("heading", { name: /product rails that feel like mind reading/i })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: /the personalization engine for startup stores/i }),
+    ).toBeVisible();
     await expect(page.getByRole("link", { name: /get early access/i }).first()).toBeVisible();
     await expect(page.getByRole("heading", { name: /see hyperpersona in action/i })).toBeVisible();
 
@@ -26,20 +28,39 @@ test.describe("HyperPersona landing page", () => {
     await expect(page.getByText(/You're on the early access list/i)).toBeVisible();
   });
 
-  test("narrow mobile keeps the editorial product preview in the first viewport", async ({ page }) => {
+  test("narrow mobile keeps hero CTAs before the SaaS workflow preview", async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 812 });
     await page.goto("/");
 
-    const productPreview = page.locator(".hero-product-card");
-    await expect(page.getByRole("img", { name: /editorial storefront product/i })).toBeVisible();
-    await expect(productPreview).toBeVisible();
+    const hero = page.getByTestId("section-Hero");
+    const primaryCta = hero.getByRole("link", { name: /^get early access$/i });
+    const workflowPreview = page.getByRole("region", { name: /hyperpersona recommendation workflow preview/i });
+    await expect(primaryCta).toBeVisible();
+    await expect(workflowPreview).toBeVisible();
+    await expect(workflowPreview.getByText("Personalization engine")).toBeVisible();
+    await expect(page.getByText("Linen Overshirt")).toHaveCount(0);
 
-    const box = await productPreview.boundingBox();
-    expect(box?.y).toBeLessThan(620);
+    const ctaBox = await primaryCta.boundingBox();
+    const box = await workflowPreview.boundingBox();
+    expect(ctaBox?.y).toBeLessThan(620);
+    expect(box?.y).toBeGreaterThan(ctaBox?.y ?? 0);
+    expect(box?.y).toBeLessThan(760);
 
     const canvas = await page.evaluate(() =>
       getComputedStyle(document.documentElement).getPropertyValue("--canvas").trim(),
     );
     expect(canvas).toBe("#f7f1e8");
+  });
+
+  test("tablet breakpoint keeps the SaaS hero readable without horizontal overflow", async ({ page }) => {
+    await page.setViewportSize({ width: 768, height: 1024 });
+    await page.goto("/");
+
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
+    expect(overflow).toBe(false);
+
+    await expect(page.getByRole("heading", { name: /the personalization engine for startup stores/i })).toBeVisible();
+    await expect(page.getByRole("region", { name: /hyperpersona recommendation workflow preview/i })).toBeVisible();
+    await expect(page.getByTestId("section-Hero").getByRole("link", { name: /^get early access$/i })).toBeVisible();
   });
 });
