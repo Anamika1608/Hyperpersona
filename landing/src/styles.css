@@ -747,20 +747,175 @@ main {
   border-block: 1px solid rgba(229, 229, 229, 0.96);
 }
 
+.features-section .section-heading {
+  max-width: 54rem;
+  margin-bottom: 1.75rem;
+}
+
+.features-section .section-heading h2 {
+  font-size: clamp(2.7rem, 5.2vw, 4.05rem);
+  line-height: 0.98;
+}
+
 .bento-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-flow: dense;
+  align-items: stretch;
 }
 
 .feature-card {
-  min-height: 18rem;
+  position: relative;
+  display: flex;
+  overflow: hidden;
+  min-height: 16.75rem;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.4rem;
   border: 1px solid var(--outline);
   border-radius: 1rem;
   background: rgba(255, 253, 249, 0.74);
   box-shadow: var(--shadow-soft);
 }
 
-.feature-card-wide {
+.feature-card::before {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background:
+    radial-gradient(circle at 14% 18%, rgba(184, 111, 77, 0.08), transparent 28%),
+    linear-gradient(180deg, rgba(255, 253, 249, 0.58), rgba(247, 241, 232, 0.18));
+}
+
+.feature-copy,
+.signal-widget {
+  position: relative;
+  z-index: 1;
+}
+
+.feature-copy {
+  max-width: 37rem;
+}
+
+.feature-card-hero,
+.feature-card-wide,
+.feature-card-realtime {
   grid-column: span 2;
+}
+
+.feature-card-hero {
+  min-height: 17.75rem;
+}
+
+.feature-card-realtime {
+  background:
+    radial-gradient(circle at 90% 16%, rgba(94, 111, 98, 0.11), transparent 30%),
+    rgba(255, 253, 249, 0.78);
+}
+
+.feature-card p {
+  max-width: 41rem;
+  margin: 0.72rem 0 0;
+}
+
+.feature-card h3 {
+  max-width: 16ch;
+}
+
+.feature-card-hero h3,
+.feature-card-wide h3,
+.feature-card-realtime h3 {
+  max-width: 24ch;
+}
+
+.signal-widget {
+  display: grid;
+  gap: 0.85rem;
+  border: 1px solid rgba(94, 111, 98, 0.18);
+  border-radius: 0.95rem;
+  background: rgba(255, 253, 249, 0.74);
+  padding: 0.9rem;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.76);
+}
+
+.signal-widget-head,
+.signal-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.signal-widget-head {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.signal-widget-head span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.signal-widget-head i {
+  width: 0.48rem;
+  height: 0.48rem;
+  border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 0 0.32rem rgba(94, 111, 98, 0.12);
+}
+
+.signal-widget-head strong {
+  color: var(--success);
+  font-size: 0.7rem;
+}
+
+.signal-rail {
+  overflow: hidden;
+  height: 0.38rem;
+  border-radius: var(--radius-pill);
+  background: rgba(94, 111, 98, 0.1);
+}
+
+.signal-rail::before {
+  display: block;
+  width: 72%;
+  height: 100%;
+  border-radius: inherit;
+  content: "";
+  background: linear-gradient(90deg, var(--accent), var(--success));
+}
+
+.signal-list {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.signal-row {
+  grid-template-columns: minmax(6.5rem, 0.7fr) minmax(0, 1fr) auto;
+  border: 1px solid var(--outline);
+  border-radius: 0.72rem;
+  background: rgba(255, 255, 255, 0.52);
+  padding: 0.62rem 0.7rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.signal-row code {
+  color: var(--accent-strong);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+.signal-row strong {
+  color: var(--success);
+  font-size: 0.74rem;
 }
 
 .deep-grid {
@@ -1087,8 +1242,11 @@ pre + pre {
     border-left: 1px solid var(--outline);
   }
 
-  .feature-card-wide {
-    grid-column: span 1;
+  .feature-card-hero,
+  .feature-card-wide,
+  .feature-card:nth-child(5),
+  .feature-card-realtime {
+    grid-column: 1 / -1;
   }
 
   .video-dashboard {
@@ -1241,6 +1399,28 @@ pre + pre {
   .code-stage,
   .waitlist-card {
     padding: 1.15rem;
+  }
+
+  .feature-card {
+    min-height: 14.25rem;
+    gap: 1rem;
+  }
+
+  .feature-card h3 {
+    max-width: none;
+    font-size: 1.68rem;
+  }
+
+  .feature-card p {
+    margin-top: 0.55rem;
+  }
+
+  .signal-row {
+    grid-template-columns: 1fr auto;
+  }
+
+  .signal-row span {
+    grid-column: 1 / -1;
   }
 
   .waitlist-form div {

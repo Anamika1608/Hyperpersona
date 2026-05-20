@@ -90,4 +90,58 @@ test.describe("HyperPersona landing page", () => {
       }
     });
   }
+
+  for (const viewport of [
+    { width: 375, height: 812 },
+    { width: 768, height: 1024 },
+    { width: 1280, height: 900 },
+  ]) {
+    test(`core features bento is balanced at ${viewport.width}px`, async ({ page }) => {
+      await page.setViewportSize(viewport);
+      await page.goto("/");
+
+      const featureSection = page.getByTestId("section-Core Features");
+      await featureSection.scrollIntoViewIfNeeded();
+
+      await expect(page.getByRole("heading", { name: /the personalization layer/i })).toBeVisible();
+      const signalWidget = page.getByRole("region", { name: /real-time learning signal widget/i });
+      await expect(signalWidget).toBeVisible();
+      await expect(signalWidget.getByText("live events")).toBeVisible();
+      await expect(signalWidget.getByText("add_to_cart")).toBeVisible();
+
+      const hasHorizontalOverflow = await page.evaluate(
+        () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
+      );
+      expect(hasHorizontalOverflow).toBe(false);
+
+      const cards = await featureSection.locator(".feature-card").evaluateAll((elements) =>
+        elements.map((element) => {
+          const rect = element.getBoundingClientRect();
+          return {
+            bottom: rect.bottom,
+            height: rect.height,
+            left: rect.left,
+            right: rect.right,
+            top: rect.top,
+          };
+        }),
+      );
+
+      expect(cards).toHaveLength(6);
+      for (const card of cards) {
+        expect(card.height).toBeGreaterThan(viewport.width < 640 ? 220 : 260);
+        expect(card.left).toBeGreaterThanOrEqual(0);
+        expect(card.right).toBeLessThanOrEqual(viewport.width);
+      }
+
+      const sorted = [...cards].sort((a, b) => a.top - b.top || a.left - b.left);
+      for (let index = 1; index < sorted.length; index += 1) {
+        const previous = sorted[index - 1];
+        const current = sorted[index];
+        const overlapsVertically = current.top < previous.bottom - 1;
+        const overlapsHorizontally = current.left < previous.right - 1 && previous.left < current.right - 1;
+        expect(overlapsVertically && overlapsHorizontally).toBe(false);
+      }
+    });
+  }
 });

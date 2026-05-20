@@ -201,6 +201,36 @@ function HowItWorks() {
   );
 }
 
+const realTimeSignals = [
+  ["view_item", "Redis hot state", "18ms"],
+  ["search", "Vector memory", "31ms"],
+  ["add_to_cart", "Pair-up cache", "44ms"],
+];
+
+function RealTimeSignalWidget() {
+  return (
+    <div className="signal-widget" role="region" aria-label="Real-Time Learning signal widget">
+      <div className="signal-widget-head">
+        <span>
+          <i aria-hidden />
+          live events
+        </span>
+        <strong>no batch lag</strong>
+      </div>
+      <div className="signal-rail" aria-hidden />
+      <ul className="signal-list" aria-label="Real-time event processing">
+        {realTimeSignals.map(([event, destination, latency]) => (
+          <li className="signal-row" key={event}>
+            <code>{event}</code>
+            <span>{destination}</span>
+            <strong>{latency}</strong>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 function FeatureGrid() {
   return (
     <section
@@ -217,13 +247,18 @@ function FeatureGrid() {
         <div className="bento-grid">
           {features.map((feature, index) => (
             <SectionReveal
-              className={`feature-card ${index === 0 || index === 3 ? "feature-card-wide" : ""}`}
+              className={`feature-card ${index === 0 ? "feature-card-hero" : ""} ${
+                index === 3 ? "feature-card-wide feature-card-technical" : ""
+              } ${feature.title === "Real-Time Learning" ? "feature-card-realtime" : ""}`}
               delay={(index % 3) * 0.05}
               key={feature.title}
             >
-              <IconBadge icon={feature.icon} />
-              <h3>{feature.title}</h3>
-              <p>{feature.description}</p>
+              <div className="feature-copy">
+                <IconBadge icon={feature.icon} />
+                <h3>{feature.title}</h3>
+                <p>{feature.description}</p>
+              </div>
+              {feature.title === "Real-Time Learning" ? <RealTimeSignalWidget /> : null}
             </SectionReveal>
           ))}
         </div>

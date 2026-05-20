@@ -64,6 +64,14 @@ describe("HyperPersona landing page", () => {
     ]) {
       expect(within(featureSection).getByRole("heading", { name: title })).toBeVisible();
     }
+
+    const signalWidget = within(featureSection).getByRole("region", {
+      name: /real-time learning signal widget/i,
+    });
+    expect(within(signalWidget).getByText("live events")).toBeVisible();
+    expect(within(signalWidget).getByText("view_item")).toBeVisible();
+    expect(within(signalWidget).getByText("search")).toBeVisible();
+    expect(within(signalWidget).getByText("add_to_cart")).toBeVisible();
   });
 
   test("exposes the hero product preview and ranking to assistive technology", () => {
