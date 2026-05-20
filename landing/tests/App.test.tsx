@@ -66,26 +66,14 @@ describe("HyperPersona landing page", () => {
     }
   });
 
-  test("explains HyperPersona as SaaS and avoids retail product-selling hero content", () => {
+  test("exposes the hero product preview and ranking to assistive technology", () => {
     render(<App />);
 
-    expect(
-      screen.getByRole("heading", {
-        name: /the personalization engine for startup stores/i,
-      }),
-    ).toBeVisible();
-    expect(
-      screen.getByText(/hyper-personalized search, browse, product page, and cart recommendations/i),
-    ).toBeVisible();
+    expect(screen.getByRole("img", { name: /editorial storefront product/i })).toBeVisible();
 
-    const workflow = screen.getByRole("region", { name: /hyperpersona recommendation workflow preview/i });
-    expect(within(workflow).getByText("Incoming signals")).toBeVisible();
-    expect(within(workflow).getByText("Personalization engine")).toBeVisible();
-    expect(within(workflow).getByText("Storefront outputs")).toBeVisible();
-    expect(within(workflow).getByText("/recommend")).toBeVisible();
-    expect(within(workflow).queryByText("Linen Overshirt")).not.toBeInTheDocument();
-    expect(within(workflow).queryByText("Moss Travel Pant")).not.toBeInTheDocument();
-    expect(screen.queryByRole("img", { name: /editorial storefront product/i })).not.toBeInTheDocument();
+    const ranking = screen.getByRole("list", { name: /preference-first recommendation ranking/i });
+    expect(within(ranking).getAllByRole("listitem")).toHaveLength(3);
+    expect(within(ranking).getByText("Linen Overshirt")).toBeVisible();
   });
 
   test("keeps navigation links and public proof copy honest", () => {

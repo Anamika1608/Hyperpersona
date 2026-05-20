@@ -143,7 +143,7 @@ const rec = await fetch(
 ).then((res) => res.json());`;
 
 export const mcpSnippet = `await session.call_tool("get_recommendation", {
-  context: "shopper is comparing category options",
+  context: "shopper is comparing breathable summer layers",
   limit: 5,
 });
 

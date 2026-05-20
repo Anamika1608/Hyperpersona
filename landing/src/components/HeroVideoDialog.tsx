@@ -78,7 +78,7 @@ export function HeroVideoDialog({ videoSrc }: HeroVideoDialogProps) {
           <span className="video-dashboard" aria-hidden>
             <span className="rank-panel">
               <span className="mini-label">Preference-first search</span>
-              {["sku_1042", "sku_2088", "sku_3190"].map((item, index) => (
+              {["linen overshirt", "moss travel pant", "cotton utility tote"].map((item, index) => (
                 <span className="rank-row" key={item}>
                   <strong>{index + 1}</strong>
                   <span>{item}</span>
