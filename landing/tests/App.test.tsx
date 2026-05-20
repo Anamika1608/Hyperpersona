@@ -121,6 +121,27 @@ describe("HyperPersona landing page", () => {
     expect(playButton).toHaveFocus();
   });
 
+  test("renders the real demo video in the preview and dialog player", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    const demoSection = screen.getByTestId("section-See HyperPersona in Action");
+    const previewVideo = within(demoSection).getByLabelText(/hyperpersona demo preview/i);
+    const previewSource = previewVideo.querySelector("source");
+
+    expect(previewSource).toHaveAttribute("src", "/media/hyperpersona-demo.mp4");
+    expect(previewVideo).toHaveAttribute("preload", "metadata");
+    expect(previewVideo).toHaveAttribute("playsinline");
+    expect(previewVideo).not.toHaveAttribute("controls");
+    expect((previewVideo as HTMLVideoElement).muted).toBe(true);
+
+    await user.click(screen.getByRole("button", { name: /play hyperpersona demo/i }));
+    const dialog = screen.getByRole("dialog", { name: /hyperpersona product demo/i });
+    const dialogVideo = within(dialog).getByText(/your browser does not support the video tag/i).closest("video");
+
+    expect(dialogVideo?.querySelector("source")).toHaveAttribute("src", "/media/hyperpersona-demo.mp4");
+  });
+
   test("keeps keyboard focus inside the open video dialog", async () => {
     const user = userEvent.setup();
     render(<App />);

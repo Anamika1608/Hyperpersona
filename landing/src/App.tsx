@@ -147,7 +147,7 @@ function VideoSection() {
         </p>
       </SectionReveal>
       <SectionReveal delay={0.08}>
-        <HeroVideoDialog videoSrc="/media/hyperpersona-design-motion.mp4" />
+        <HeroVideoDialog videoSrc="/media/hyperpersona-demo.mp4" />
       </SectionReveal>
     </section>
   );

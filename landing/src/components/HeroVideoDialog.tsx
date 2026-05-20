@@ -75,24 +75,17 @@ export function HeroVideoDialog({ videoSrc }: HeroVideoDialogProps) {
             <span />
             <span />
           </span>
-          <span className="video-dashboard" aria-hidden>
-            <span className="rank-panel">
-              <span className="mini-label">Preference-first search</span>
-              {["linen overshirt", "moss travel pant", "cotton utility tote"].map((item, index) => (
-                <span className="rank-row" key={item}>
-                  <strong>{index + 1}</strong>
-                  <span>{item}</span>
-                  <em>{index === 0 ? "96%" : index === 1 ? "88%" : "74%"}</em>
-                </span>
-              ))}
-            </span>
-            <span className="trace-panel">
-              <span className="mini-label">Trace</span>
-              <span>privacy_check · ok</span>
-              <span>retrieve_facts · 18ms</span>
-              <span>verify_recommendation · valid</span>
-            </span>
-          </span>
+          <video
+            aria-label="HyperPersona demo preview"
+            className="video-preview"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="metadata"
+          >
+            <source src={videoSrc} type="video/mp4" />
+          </video>
           <span className="play-button" aria-hidden>
             <Play size={28} fill="currentColor" />
           </span>

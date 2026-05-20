@@ -486,6 +486,7 @@ main {
   display: block;
   overflow: hidden;
   min-height: 31rem;
+  aspect-ratio: 16 / 9;
   border: 1px solid rgba(34, 28, 23, 0.14);
   border-radius: 1.25rem;
   background:
@@ -506,10 +507,32 @@ main {
   opacity: 0.28;
 }
 
+.video-preview {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  background: var(--ink);
+}
+
+.video-frame::after {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background:
+    linear-gradient(180deg, rgba(255, 253, 249, 0.28), transparent 30%, rgba(34, 28, 23, 0.08)),
+    radial-gradient(circle at 50% 50%, transparent 0 28%, rgba(34, 28, 23, 0.12) 100%);
+}
+
 .video-toolbar {
   position: absolute;
   top: 1rem;
   left: 1rem;
+  z-index: 2;
   display: flex;
   gap: 0.45rem;
 }
@@ -575,6 +598,7 @@ main {
   position: absolute;
   top: 50%;
   left: 50%;
+  z-index: 3;
   display: grid;
   width: 5.1rem;
   height: 5.1rem;
@@ -1257,6 +1281,11 @@ pre + pre {
     display: none;
   }
 
+  .video-frame {
+    min-height: 0;
+    aspect-ratio: 3328 / 2160;
+  }
+
   .footer {
     grid-template-columns: 1fr;
   }
@@ -1358,6 +1387,10 @@ pre + pre {
     font-size: 2.55rem;
   }
 
+  .video-section .section-heading h2 {
+    font-size: 2.18rem;
+  }
+
   .video-section,
   .how-section,
   .features-section,
@@ -1368,7 +1401,6 @@ pre + pre {
   }
 
   .video-frame {
-    min-height: 25rem;
     border-radius: 1rem;
   }
 

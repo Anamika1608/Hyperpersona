@@ -7,9 +7,12 @@ test.describe("HyperPersona landing page", () => {
     await expect(page.getByRole("heading", { name: /product rails that feel like mind reading/i })).toBeVisible();
     await expect(page.getByRole("link", { name: /get early access/i }).first()).toBeVisible();
     await expect(page.getByRole("heading", { name: /see hyperpersona in action/i })).toBeVisible();
+    await expect(page.getByLabel(/hyperpersona demo preview/i)).toHaveAttribute("preload", "metadata");
 
     await page.getByRole("button", { name: /play hyperpersona demo/i }).click();
-    await expect(page.getByRole("dialog", { name: /hyperpersona product demo/i })).toBeVisible();
+    const dialog = page.getByRole("dialog", { name: /hyperpersona product demo/i });
+    await expect(dialog).toBeVisible();
+    await expect(dialog.locator("video source")).toHaveAttribute("src", "/media/hyperpersona-demo.mp4");
     await page.keyboard.press("Escape");
     await expect(page.getByRole("dialog", { name: /hyperpersona product demo/i })).toHaveCount(0);
   });
@@ -24,6 +27,25 @@ test.describe("HyperPersona landing page", () => {
     await page.getByLabel("Work email").fill("mobile@example.com");
     await page.getByRole("button", { name: /^get early access$/i }).click();
     await expect(page.getByText(/You're on the early access list/i)).toBeVisible();
+  });
+
+  test("mobile demo video preview stays inside the viewport", async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    await page.goto("/");
+
+    const demoSection = page.getByTestId("section-See HyperPersona in Action");
+    await demoSection.scrollIntoViewIfNeeded();
+
+    const headingBox = await demoSection.getByRole("heading", { name: /see hyperpersona in action/i }).boundingBox();
+    const frameBox = await demoSection.locator(".video-frame").boundingBox();
+    const previewBox = await page.getByLabel(/hyperpersona demo preview/i).boundingBox();
+
+    expect(headingBox?.x).toBeGreaterThanOrEqual(0);
+    expect((headingBox?.x ?? 0) + (headingBox?.width ?? 0)).toBeLessThanOrEqual(375);
+    expect(frameBox?.x).toBeGreaterThanOrEqual(0);
+    expect((frameBox?.x ?? 0) + (frameBox?.width ?? 0)).toBeLessThanOrEqual(375);
+    expect(previewBox?.x).toBeGreaterThanOrEqual(0);
+    expect((previewBox?.x ?? 0) + (previewBox?.width ?? 0)).toBeLessThanOrEqual(375);
   });
 
   test("narrow mobile keeps the editorial product preview in the first viewport", async ({ page }) => {
