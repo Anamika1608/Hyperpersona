@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readFileSync, statSync } from "node:fs";
 import { resolve } from "node:path";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -19,6 +19,54 @@ const expectedSections = [
 ];
 
 describe("HyperPersona landing page", () => {
+  test("publishes the branded favicon and mobile metadata", () => {
+    const indexHtml = readFileSync(resolve(__dirname, "../index.html"), "utf8");
+    const faviconSvg = readFileSync(resolve(__dirname, "../public/favicon.svg"), "utf8");
+    const manifest = JSON.parse(
+      readFileSync(resolve(__dirname, "../public/site.webmanifest"), "utf8"),
+    ) as {
+      name: string;
+      short_name: string;
+      background_color: string;
+      theme_color: string;
+      icons: Array<{ src: string; sizes: string; type: string }>;
+    };
+
+    expect(indexHtml).toContain('<meta name="theme-color" content="#f7f1e8" />');
+    expect(indexHtml).toContain('<link rel="icon" type="image/svg+xml" href="/favicon.svg" />');
+    expect(indexHtml).toContain(
+      '<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />',
+    );
+    expect(indexHtml).toContain(
+      '<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />',
+    );
+    expect(indexHtml).toContain('<link rel="manifest" href="/site.webmanifest" />');
+
+    expect(faviconSvg).toContain("HyperPersona favicon");
+    expect(faviconSvg).toContain("#fffdf9");
+    expect(faviconSvg).toContain("#221c17");
+    expect(faviconSvg).toContain("#b86f4d");
+    expect(faviconSvg).toContain(">h</text>");
+    expect(faviconSvg).not.toContain(">hyperpersona<");
+
+    expect(manifest.name).toBe("HyperPersona");
+    expect(manifest.short_name).toBe("HyperPersona");
+    expect(manifest.background_color).toBe("#f7f1e8");
+    expect(manifest.theme_color).toBe("#f7f1e8");
+    expect(manifest.icons).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ src: "/favicon.svg", sizes: "any", type: "image/svg+xml" }),
+        expect.objectContaining({
+          src: "/apple-touch-icon.png",
+          sizes: "180x180",
+          type: "image/png",
+        }),
+      ]),
+    );
+    expect(statSync(resolve(__dirname, "../public/favicon-32.png")).size).toBeGreaterThan(100);
+    expect(statSync(resolve(__dirname, "../public/apple-touch-icon.png")).size).toBeGreaterThan(100);
+  });
+
   test("uses the apps/web editorial commerce theme instead of a dark SaaS shell", () => {
     const css = readFileSync(resolve(__dirname, "../src/styles.css"), "utf8");
 
