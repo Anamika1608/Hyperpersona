@@ -10,7 +10,6 @@ const expectedSections = [
   "Navigation",
   "Hero",
   "See HyperPersona in Action",
-  "Built for modern e-commerce stacks",
   "How It Works",
   "Core Features",
   "Recommendation Types",
@@ -84,7 +83,7 @@ describe("HyperPersona landing page", () => {
     expect(within(ranking).getByText("Linen Overshirt")).toBeVisible();
   });
 
-  test("keeps navigation links and public proof copy honest", () => {
+  test("keeps navigation links honest and removes repetitive proof copy", () => {
     render(<App />);
 
     const links = screen.getAllByRole("link");
@@ -99,11 +98,27 @@ describe("HyperPersona landing page", () => {
       "https://github.com/Anamika1608/Hyperpersona",
     );
     expect(screen.queryByText(/under 10 minutes/i)).not.toBeInTheDocument();
-    expect(screen.getByText("Product catalog")).toBeVisible();
-    expect(screen.getByText("Storefront rails")).toBeVisible();
+    expect(screen.queryByTestId("section-Built for modern e-commerce stacks")).not.toBeInTheDocument();
+    expect(screen.queryByText("Built for modern e-commerce stacks")).not.toBeInTheDocument();
+    expect(screen.queryByText("Product catalog")).not.toBeInTheDocument();
+    expect(screen.queryByText("Storefront rails")).not.toBeInTheDocument();
+    expect(screen.queryByText("REST events")).not.toBeInTheDocument();
+    expect(screen.queryByText("Verified recommendation copy")).not.toBeInTheDocument();
+    expect(screen.queryByText("Facts + behavior + session memory")).not.toBeInTheDocument();
     expect(screen.queryByText(/shopify-ready/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/woocommerce-ready/i)).not.toBeInTheDocument();
     expect(screen.queryByTestId("section-Pricing")).not.toBeInTheDocument();
+  });
+
+  test("keeps the landing page copy lean around visual sections", () => {
+    render(<App />);
+
+    expect(screen.getByRole("heading", { name: /see hyperpersona in action/i })).toBeVisible();
+    expect(screen.queryByText(/A clean walkthrough from shopper signal/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Keep the store you already ship/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Keep your frontend, checkout, catalog, and auth/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Join the first commerce teams/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/No credit card required/i)).not.toBeInTheDocument();
   });
 
   test("opens and closes the video dialog with keyboard support", async () => {

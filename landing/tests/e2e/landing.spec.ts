@@ -7,6 +7,8 @@ test.describe("HyperPersona landing page", () => {
     await expect(page.getByRole("heading", { name: /product rails that feel like mind reading/i })).toBeVisible();
     await expect(page.getByRole("link", { name: /get early access/i }).first()).toBeVisible();
     await expect(page.getByRole("heading", { name: /see hyperpersona in action/i })).toBeVisible();
+    await expect(page.getByText(/A clean walkthrough from shopper signal/i)).toHaveCount(0);
+    await expect(page.getByText(/Built for modern e-commerce stacks/i)).toHaveCount(0);
     await expect(page.getByLabel(/hyperpersona demo preview/i)).toHaveAttribute("preload", "metadata");
 
     await page.getByRole("button", { name: /play hyperpersona demo/i }).click();

@@ -26,11 +26,8 @@ import {
   features,
   footerLinks,
   howItWorks,
-  integrationBadges,
   mcpSnippet,
-  proofPoints,
   restSnippet,
-  trustItems,
 } from "./content";
 
 const heroRecommendations = [
@@ -142,29 +139,10 @@ function VideoSection() {
       <SectionReveal className="section-heading centered">
         <p className="eyebrow">Product demo</p>
         <h2>See HyperPersona in Action</h2>
-        <p>
-          A clean walkthrough from shopper signal to ranked result, verified copy, and a trace your team can inspect.
-        </p>
       </SectionReveal>
       <SectionReveal delay={0.08}>
         <HeroVideoDialog videoSrc="/media/hyperpersona-demo.mp4" />
       </SectionReveal>
-    </section>
-  );
-}
-
-function TrustBar() {
-  return (
-    <section id="trust" className="trust-bar" data-testid="section-Built for modern e-commerce stacks">
-      <p>Built for modern e-commerce stacks</p>
-      <ul>
-        {trustItems.map(({ icon: Icon, label }) => (
-          <li key={label}>
-            <Icon size={15} aria-hidden />
-            {label}
-          </li>
-        ))}
-      </ul>
     </section>
   );
 }
@@ -177,15 +155,11 @@ function HowItWorks() {
       data-testid="section-How It Works"
       aria-labelledby="how-title"
     >
-      <SectionReveal className="section-heading split-heading">
+      <SectionReveal className="section-heading centered">
         <div>
           <p className="eyebrow">How It Works</p>
           <h2 id="how-title">Three moves from raw events to personal commerce.</h2>
         </div>
-        <p>
-          Keep the store you already ship. HyperPersona sits beside it as a recommendation, memory, consent, and
-          observability layer.
-        </p>
       </SectionReveal>
       <div className="step-grid">
         {howItWorks.map((step, index) => (
@@ -284,10 +258,7 @@ function RecommendationDeepDive() {
           <div className="mode-copy">
             <span className="mode-number">Type 1</span>
             <h3>Preference-First Search Results</h3>
-            <p>
-              When a shopper searches, HyperPersona reranks the result set so their preferred items rise to the
-              top. Not alphabetical. Not generic popularity. Their order.
-            </p>
+            <p>Reranks search results into the shopper's order.</p>
           </div>
           <div className="search-visual" aria-label="Preference-first search result diagram">
             <div className="search-box">
@@ -312,10 +283,7 @@ function RecommendationDeepDive() {
           <div className="mode-copy">
             <span className="mode-number">Type 2</span>
             <h3>Pair-Up Recommendations</h3>
-            <p>
-              Based on views, carts, and purchases, HyperPersona recommends products that pair naturally with what
-              the shopper already cares about.
-            </p>
+            <p>Pairs the current product or cart with natural add-ons.</p>
           </div>
           <div className="pair-visual" aria-label="Pair-up recommendation diagram">
             <div className="product-slab">
@@ -350,18 +318,6 @@ function IntegrationSection() {
       <SectionReveal className="integration-copy">
         <p className="eyebrow">For startup ecommerce teams</p>
         <h2 id="integrations-title">Plug Into Your Store Without Rebuilding It</h2>
-        <p>
-          Keep your frontend, checkout, catalog, and auth. Add a thin server-side client that streams consented
-          events and asks HyperPersona for ranked rails, complements, traces, and LLM-ready explanations.
-        </p>
-        <ul className="badge-list" aria-label="Integration capabilities">
-          {integrationBadges.map(({ icon: Icon, label }) => (
-            <li key={label}>
-              <Icon size={14} aria-hidden />
-              {label}
-            </li>
-          ))}
-        </ul>
         <a href="#waitlist" className="button primary">
           Start Integrating <ChevronRight size={17} />
         </a>
@@ -381,19 +337,6 @@ function IntegrationSection() {
         </pre>
       </SectionReveal>
     </section>
-  );
-}
-
-function ProofStrip() {
-  return (
-    <div className="proof-strip" role="list" aria-label="Platform proof points">
-      {proofPoints.map(({ icon: Icon, label }) => (
-        <div key={label} role="listitem">
-          <Icon size={15} aria-hidden />
-          <span>{label}</span>
-        </div>
-      ))}
-    </div>
   );
 }
 
@@ -419,10 +362,6 @@ function WaitlistSection() {
       <SectionReveal className="section-shell waitlist-card">
         <p className="eyebrow">Early access</p>
         <h2 id="waitlist-title">Ready to Make Every Recommendation Count?</h2>
-        <p>
-          Join the first commerce teams using agentic personalization without building ranking, memory, consent,
-          and observability infrastructure from scratch.
-        </p>
         <form onSubmit={onSubmit} className="waitlist-form">
           <label htmlFor="waitlist-email">Work email</label>
           <div>
@@ -436,7 +375,6 @@ function WaitlistSection() {
             You're on the early access list, {submittedEmail}.
           </p>
         ) : null}
-        <span className="trust-line">No credit card required for early access requests.</span>
       </SectionReveal>
     </section>
   );
@@ -449,7 +387,6 @@ function Footer() {
         <a href="#hero" className="wordmark">
           hyperpersona
         </a>
-        <p>Agentic recommendations for modern ecommerce.</p>
       </div>
       <nav aria-label="Footer">
         {footerLinks.map((link) => (
@@ -470,12 +407,10 @@ export default function App() {
       <main>
         <Hero />
         <VideoSection />
-        <TrustBar />
         <HowItWorks />
         <FeatureGrid />
         <RecommendationDeepDive />
         <IntegrationSection />
-        <ProofStrip />
         <WaitlistSection />
       </main>
       <Footer />
