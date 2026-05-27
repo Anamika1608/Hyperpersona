@@ -486,7 +486,7 @@ main {
   display: block;
   overflow: hidden;
   min-height: 31rem;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 3328 / 2160;
   border: 1px solid rgba(34, 28, 23, 0.14);
   border-radius: 1.25rem;
   background:
@@ -513,7 +513,7 @@ main {
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
   background: var(--ink);
 }
@@ -623,45 +623,43 @@ main {
 }
 
 .video-dialog {
-  width: min(76rem, 100%);
+  position: relative;
+  overflow: hidden;
+  width: fit-content;
+  max-width: calc(100vw - 2rem);
+  max-height: calc(100dvh - 2rem);
+  aspect-ratio: 3328 / 2160;
   border: 1px solid rgba(34, 28, 23, 0.16);
   border-radius: 1.25rem;
-  background: var(--surface-strong);
+  background: var(--ink);
   box-shadow: 0 38px 110px rgba(34, 28, 23, 0.34);
 }
 
-.dialog-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 1rem;
-  border-bottom: 1px solid var(--outline);
-}
-
-.dialog-head h3 {
-  margin: 0;
-  color: var(--ink);
-  font-size: 1rem;
-}
-
-.dialog-head button {
+.dialog-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 2;
   display: grid;
   width: 2.25rem;
   height: 2.25rem;
   place-items: center;
-  border: 1px solid var(--outline);
+  border: 1px solid rgba(255, 253, 249, 0.32);
   border-radius: 50%;
-  color: var(--ink);
-  background: rgba(247, 241, 232, 0.7);
+  color: var(--surface-strong);
+  background: rgba(34, 28, 23, 0.58);
+  backdrop-filter: blur(12px);
   cursor: pointer;
 }
 
 .dialog-video {
   display: block;
-  width: 100%;
-  max-height: min(72vh, 48rem);
-  border-radius: 0 0 1.25rem 1.25rem;
+  width: auto;
+  height: auto;
+  max-width: min(78rem, calc(100vw - 2rem));
+  max-height: calc(100dvh - 2rem);
+  aspect-ratio: 3328 / 2160;
+  border-radius: inherit;
   background: var(--ink);
 }
 

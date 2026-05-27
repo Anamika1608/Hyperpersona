@@ -18,7 +18,20 @@ test.describe("HyperPersona landing page", () => {
     await page.getByRole("button", { name: /play hyperpersona demo/i }).click();
     const dialog = page.getByRole("dialog", { name: /hyperpersona product demo/i });
     await expect(dialog).toBeVisible();
+    await expect(dialog.getByRole("heading", { name: /hyperpersona product demo/i })).toHaveCount(0);
     await expect(dialog.locator("video source")).toHaveAttribute("src", "/media/hyperpersona-demo.mp4");
+    const dialogBox = await dialog.boundingBox();
+    const videoBox = await dialog.locator("video").boundingBox();
+    const expectedRatio = 3328 / 2160;
+
+    expect(dialogBox?.width && dialogBox?.height ? dialogBox.width / dialogBox.height : 0).toBeCloseTo(
+      expectedRatio,
+      1,
+    );
+    expect(videoBox?.width && videoBox?.height ? videoBox.width / videoBox.height : 0).toBeCloseTo(
+      expectedRatio,
+      1,
+    );
     await page.keyboard.press("Escape");
     await expect(page.getByRole("dialog", { name: /hyperpersona product demo/i })).toHaveCount(0);
   });

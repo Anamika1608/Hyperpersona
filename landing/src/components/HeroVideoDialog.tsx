@@ -1,6 +1,6 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Play, X } from "lucide-react";
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type HeroVideoDialogProps = {
   videoSrc: string;
@@ -8,7 +8,6 @@ type HeroVideoDialogProps = {
 
 export function HeroVideoDialog({ videoSrc }: HeroVideoDialogProps) {
   const [open, setOpen] = useState(false);
-  const titleId = useId();
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const triggerButtonRef = useRef<HTMLButtonElement>(null);
@@ -105,7 +104,7 @@ export function HeroVideoDialog({ videoSrc }: HeroVideoDialogProps) {
             <motion.div
               role="dialog"
               aria-modal="true"
-              aria-labelledby={titleId}
+              aria-label="HyperPersona product demo"
               className="video-dialog"
               ref={dialogRef}
               initial={reduceMotion ? false : { opacity: 0, y: 24, scale: 0.98 }}
@@ -113,18 +112,24 @@ export function HeroVideoDialog({ videoSrc }: HeroVideoDialogProps) {
               exit={reduceMotion ? undefined : { opacity: 0, y: 16, scale: 0.98 }}
               transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
             >
-              <div className="dialog-head">
-                <h3 id={titleId}>HyperPersona product demo</h3>
-                <button
-                  type="button"
-                  ref={closeButtonRef}
-                  onClick={() => setOpen(false)}
-                  aria-label="Close video dialog"
-                >
-                  <X size={18} />
-                </button>
-              </div>
-              <video className="dialog-video" controls autoPlay playsInline tabIndex={0}>
+              <button
+                type="button"
+                ref={closeButtonRef}
+                className="dialog-close"
+                onClick={() => setOpen(false)}
+                aria-label="Close video dialog"
+              >
+                <X size={18} />
+              </button>
+              <video
+                className="dialog-video"
+                controls
+                autoPlay
+                playsInline
+                tabIndex={0}
+                width={3328}
+                height={2160}
+              >
                 <source src={videoSrc} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>

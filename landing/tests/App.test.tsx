@@ -176,7 +176,9 @@ describe("HyperPersona landing page", () => {
     const playButton = screen.getByRole("button", { name: /play hyperpersona demo/i });
 
     await user.click(playButton);
-    expect(screen.getByRole("dialog", { name: /hyperpersona product demo/i })).toBeVisible();
+    const dialog = screen.getByRole("dialog", { name: /hyperpersona product demo/i });
+    expect(dialog).toBeVisible();
+    expect(within(dialog).queryByRole("heading", { name: /hyperpersona product demo/i })).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: /close video dialog/i })).toHaveFocus();
 
     await user.keyboard("{Escape}");
@@ -204,7 +206,16 @@ describe("HyperPersona landing page", () => {
     const dialog = screen.getByRole("dialog", { name: /hyperpersona product demo/i });
     const dialogVideo = within(dialog).getByText(/your browser does not support the video tag/i).closest("video");
 
+    expect(dialogVideo).toHaveAttribute("width", "3328");
+    expect(dialogVideo).toHaveAttribute("height", "2160");
     expect(dialogVideo?.querySelector("source")).toHaveAttribute("src", "/media/hyperpersona-demo.mp4");
+  });
+
+  test("keeps video preview and modal aligned to the source video aspect ratio", () => {
+    const css = readFileSync(resolve(__dirname, "../src/styles.css"), "utf8");
+
+    expect(css).toContain("aspect-ratio: 3328 / 2160");
+    expect(css).not.toContain("aspect-ratio: 16 / 9");
   });
 
   test("keeps keyboard focus inside the open video dialog", async () => {
