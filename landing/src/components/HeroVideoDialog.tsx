@@ -78,8 +78,6 @@ export function HeroVideoDialog({ videoSrc }: HeroVideoDialogProps) {
           <video
             aria-label="HyperPersona demo preview"
             className="video-preview"
-            autoPlay
-            loop
             muted
             playsInline
             preload="metadata"

@@ -9,7 +9,11 @@ test.describe("HyperPersona landing page", () => {
     await expect(page.getByRole("heading", { name: /see hyperpersona in action/i })).toBeVisible();
     await expect(page.getByText(/A clean walkthrough from shopper signal/i)).toHaveCount(0);
     await expect(page.getByText(/Built for modern e-commerce stacks/i)).toHaveCount(0);
-    await expect(page.getByLabel(/hyperpersona demo preview/i)).toHaveAttribute("preload", "metadata");
+    const previewVideo = page.getByLabel(/hyperpersona demo preview/i);
+    await expect(previewVideo).toHaveAttribute("preload", "metadata");
+    await expect(previewVideo).not.toHaveAttribute("autoplay");
+    await expect(previewVideo).not.toHaveAttribute("loop");
+    await expect.poll(() => previewVideo.evaluate((video) => (video as HTMLVideoElement).paused)).toBe(true);
 
     await page.getByRole("button", { name: /play hyperpersona demo/i }).click();
     const dialog = page.getByRole("dialog", { name: /hyperpersona product demo/i });

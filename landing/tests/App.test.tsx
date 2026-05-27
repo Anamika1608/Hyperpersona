@@ -147,6 +147,8 @@ describe("HyperPersona landing page", () => {
     expect(previewSource).toHaveAttribute("src", "/media/hyperpersona-demo.mp4");
     expect(previewVideo).toHaveAttribute("preload", "metadata");
     expect(previewVideo).toHaveAttribute("playsinline");
+    expect(previewVideo).not.toHaveAttribute("autoplay");
+    expect(previewVideo).not.toHaveAttribute("loop");
     expect(previewVideo).not.toHaveAttribute("controls");
     expect((previewVideo as HTMLVideoElement).muted).toBe(true);
 
