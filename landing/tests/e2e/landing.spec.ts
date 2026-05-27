@@ -185,4 +185,20 @@ test.describe("HyperPersona landing page", () => {
       }
     });
   }
+
+  test("waitlist card heading stays proportional to the CTA card", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto("/");
+
+    const waitlist = page.getByTestId("section-Ready to Make Every Recommendation Count?");
+    await waitlist.scrollIntoViewIfNeeded();
+
+    const cardBox = await waitlist.locator(".waitlist-card").boundingBox();
+    const heading = waitlist.getByRole("heading", { name: /ready to make every recommendation count/i });
+    const headingBox = await heading.boundingBox();
+    const fontSize = await heading.evaluate((element) => Number.parseFloat(getComputedStyle(element).fontSize));
+
+    expect(fontSize).toBeLessThanOrEqual(56);
+    expect(headingBox?.width ?? 0).toBeLessThanOrEqual((cardBox?.width ?? 0) - 96);
+  });
 });

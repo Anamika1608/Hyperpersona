@@ -1088,6 +1088,15 @@ pre + pre {
   border-radius: 1.25rem;
   background: rgba(255, 253, 249, 0.72);
   box-shadow: var(--shadow-soft);
+  padding-block: clamp(2rem, 4vw, 3rem);
+}
+
+.waitlist h2 {
+  max-width: 16ch;
+  margin: 0.8rem auto 0;
+  font-size: clamp(2.85rem, 4.2vw, 3.5rem);
+  line-height: 1.02;
+  text-wrap: balance;
 }
 
 .waitlist-card > p {
@@ -1098,8 +1107,8 @@ pre + pre {
 .waitlist-form {
   display: grid;
   gap: 0.6rem;
-  max-width: 44rem;
-  margin: 2rem auto 0;
+  max-width: 40rem;
+  margin: 1.65rem auto 0;
   text-align: left;
 }
 
