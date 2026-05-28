@@ -74,6 +74,23 @@ test.describe("HyperPersona landing page", () => {
     expect((previewBox?.x ?? 0) + (previewBox?.width ?? 0)).toBeLessThanOrEqual(375);
   });
 
+  test("navbar Demo link scrolls to the demo section", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto("/");
+
+    await page.getByRole("navigation", { name: /primary navigation/i }).getByRole("link", { name: "Demo" }).click();
+
+    await expect.poll(() => page.evaluate(() => window.location.hash)).toBe("#demo");
+    await expect
+      .poll(() =>
+        page.evaluate(() => {
+          const demo = document.querySelector("#demo");
+          return demo ? Math.abs(demo.getBoundingClientRect().top) : Number.POSITIVE_INFINITY;
+        }),
+      )
+      .toBeLessThan(160);
+  });
+
   test("narrow mobile keeps the editorial product preview in the first viewport", async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 812 });
     await page.goto("/");
@@ -216,10 +233,10 @@ test.describe("HyperPersona landing page", () => {
     const footer = page.getByTestId("section-Footer");
     await footer.scrollIntoViewIfNeeded();
 
-    const docsBox = await footer.getByRole("link", { name: "Docs" }).boundingBox();
+    const footerNavBox = await footer.getByRole("navigation", { name: "Footer" }).boundingBox();
     const bylineBox = await footer.getByText("Built with love by the HyperPersona team.").boundingBox();
 
-    expect(bylineBox?.x ?? 0).toBeCloseTo(docsBox?.x ?? 0, 0);
-    expect(bylineBox?.y ?? 0).toBeGreaterThan((docsBox?.y ?? 0) + (docsBox?.height ?? 0) + 4);
+    expect(bylineBox?.x ?? 0).toBeCloseTo(footerNavBox?.x ?? 0, 0);
+    expect(bylineBox?.y ?? 0).toBeGreaterThan((footerNavBox?.y ?? 0) + (footerNavBox?.height ?? 0) + 4);
   });
 });

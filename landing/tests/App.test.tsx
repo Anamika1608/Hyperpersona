@@ -145,6 +145,10 @@ describe("HyperPersona landing page", () => {
       "href",
       "https://github.com/Anamika1608/Hyperpersona",
     );
+    expect(within(screen.getByRole("navigation", { name: /primary navigation/i })).getByRole("link", { name: "Demo" })).toHaveAttribute(
+      "href",
+      "#demo",
+    );
     expect(screen.queryByText(/under 10 minutes/i)).not.toBeInTheDocument();
     expect(screen.queryByTestId("section-Built for modern e-commerce stacks")).not.toBeInTheDocument();
     expect(screen.queryByText("Built for modern e-commerce stacks")).not.toBeInTheDocument();

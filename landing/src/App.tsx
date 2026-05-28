@@ -54,6 +54,7 @@ function Navbar() {
       <nav aria-label="Primary navigation">
         <a href="#features">Features</a>
         <a href="#how-it-works">How It Works</a>
+        <a href="#demo">Demo</a>
         <a href="#integrations">Integrations</a>
       </nav>
       <a className="nav-cta" href={contactHref}>
