@@ -368,14 +368,16 @@ function Footer() {
           hyperpersona
         </a>
       </div>
-      <nav aria-label="Footer">
-        {footerLinks.map((link) => (
-          <a key={link.label} href={link.href}>
-            {link.label}
-          </a>
-        ))}
-      </nav>
-      <p>Built with love by the HyperPersona team.</p>
+      <div className="footer-link-stack">
+        <nav aria-label="Footer">
+          {footerLinks.map((link) => (
+            <a key={link.label} href={link.href}>
+              {link.label}
+            </a>
+          ))}
+        </nav>
+        <p>Built with love by the HyperPersona team.</p>
+      </div>
     </footer>
   );
 }

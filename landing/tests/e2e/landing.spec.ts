@@ -208,4 +208,18 @@ test.describe("HyperPersona landing page", () => {
     expect(fontSize).toBeLessThanOrEqual(56);
     expect(headingBox?.width ?? 0).toBeLessThanOrEqual((cardBox?.width ?? 0) - 96);
   });
+
+  test("footer byline sits below the footer links and aligns with Docs", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto("/");
+
+    const footer = page.getByTestId("section-Footer");
+    await footer.scrollIntoViewIfNeeded();
+
+    const docsBox = await footer.getByRole("link", { name: "Docs" }).boundingBox();
+    const bylineBox = await footer.getByText("Built with love by the HyperPersona team.").boundingBox();
+
+    expect(bylineBox?.x ?? 0).toBeCloseTo(docsBox?.x ?? 0, 0);
+    expect(bylineBox?.y ?? 0).toBeGreaterThan((docsBox?.y ?? 0) + (docsBox?.height ?? 0) + 4);
+  });
 });
