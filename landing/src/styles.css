@@ -73,18 +73,6 @@ main {
   overflow: hidden;
 }
 
-.sr-only {
-  position: absolute;
-  overflow: hidden;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  border: 0;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-}
-
 .section-shell,
 .site-nav,
 .footer,
@@ -150,8 +138,7 @@ main {
 }
 
 .nav-cta,
-.button,
-.waitlist-form button {
+.button {
   display: inline-flex;
   min-height: 2.85rem;
   align-items: center;
@@ -185,21 +172,18 @@ main {
 }
 
 .button:hover,
-.nav-cta:hover,
-.waitlist-form button:hover {
+.nav-cta:hover {
   transform: translateY(-1px);
 }
 
-.button.primary,
-.waitlist-form button {
+.button.primary {
   border: 1px solid rgba(34, 28, 23, 0.9);
   background: var(--ink);
   color: var(--surface-strong);
   box-shadow: 0 14px 34px rgba(34, 28, 23, 0.12);
 }
 
-.button.primary:hover,
-.waitlist-form button:hover {
+.button.primary:hover {
   background: #2f271f;
 }
 
@@ -1116,57 +1100,8 @@ pre + pre {
   margin: 1rem auto 0;
 }
 
-.waitlist-form {
-  display: grid;
-  gap: 0.6rem;
-  max-width: 40rem;
-  margin: 1.65rem auto 0;
-  text-align: left;
-}
-
-.waitlist-form label {
-  color: var(--muted);
-  font-size: 0.78rem;
-  font-weight: 700;
-}
-
-.waitlist-form div {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 0.7rem;
-  border: 1px solid var(--outline-strong);
-  border-radius: var(--radius-pill);
-  padding: 0.45rem 0.45rem 0.45rem 1rem;
-  background: rgba(255, 253, 249, 0.82);
-}
-
-.waitlist-form input {
-  min-width: 0;
-  border: 0;
-  color: var(--ink);
-  background: transparent;
-  outline: 0;
-}
-
-.waitlist-form input::placeholder {
-  color: rgba(107, 98, 89, 0.72);
-}
-
-.waitlist-form button {
-  border: 0;
-  padding: 0 1.2rem;
-}
-
-.form-success {
-  color: var(--success) !important;
-}
-
-.trust-line {
-  display: block;
-  margin-top: 1rem;
-  color: var(--muted);
-  font-size: 0.84rem;
+.waitlist-contact {
+  margin-top: 1.65rem;
 }
 
 .footer {
@@ -1472,16 +1407,6 @@ pre + pre {
 
   .signal-row span {
     grid-column: 1 / -1;
-  }
-
-  .waitlist-form div {
-    grid-template-columns: auto 1fr;
-    border-radius: 1rem;
-  }
-
-  .waitlist-form button {
-    grid-column: 1 / -1;
-    width: 100%;
   }
 
   .footer nav {

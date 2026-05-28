@@ -11,14 +11,12 @@ import {
   ArrowDown,
   ArrowRight,
   ChevronRight,
-  Mail,
   MousePointer2,
   Search,
   ShoppingBag,
   Sparkles,
   type LucideIcon,
 } from "lucide-react";
-import { FormEvent, useState } from "react";
 
 import { HeroVideoDialog } from "./components/HeroVideoDialog";
 import { SectionReveal } from "./components/SectionReveal";
@@ -35,6 +33,9 @@ const heroRecommendations = [
   ["02", "Moss Travel Pant", "saved similar silhouettes", "88"],
   ["03", "Cotton Utility Tote", "pairs with current cart", "74"],
 ];
+
+const contactHref =
+  "mailto:hello@hyperpersona.ai?subject=HyperPersona%20demo%20request&body=Hi%20HyperPersona%20team%2C%0A%0AI%27d%20like%20to%20learn%20more%20about%20HyperPersona.%0A%0ACompany%3A%0AWebsite%3A%0AUse%20case%3A";
 
 function IconBadge({ icon: Icon }: { icon: LucideIcon }) {
   return (
@@ -55,8 +56,8 @@ function Navbar() {
         <a href="#how-it-works">How It Works</a>
         <a href="#integrations">Integrations</a>
       </nav>
-      <a className="nav-cta" href="#waitlist">
-        Get Early Access
+      <a className="nav-cta" href={contactHref}>
+        Contact Us
       </a>
     </header>
   );
@@ -122,8 +123,8 @@ function Hero() {
       </SectionReveal>
       <HeroVisual />
       <SectionReveal className="hero-actions" delay={0.12}>
-        <a className="button primary" href="#waitlist">
-          Get Early Access <ArrowRight size={17} />
+        <a className="button primary" href={contactHref}>
+          Contact Us <ArrowRight size={17} />
         </a>
         <a className="button secondary" href="#demo">
           See It In Action <ArrowDown size={17} />
@@ -318,7 +319,7 @@ function IntegrationSection() {
       <SectionReveal className="integration-copy">
         <p className="eyebrow">For startup ecommerce teams</p>
         <h2 id="integrations-title">Plug Into Your Store Without Rebuilding It</h2>
-        <a href="#waitlist" className="button primary">
+        <a href={contactHref} className="button primary">
           Start Integrating <ChevronRight size={17} />
         </a>
       </SectionReveal>
@@ -341,17 +342,6 @@ function IntegrationSection() {
 }
 
 function WaitlistSection() {
-  const [submittedEmail, setSubmittedEmail] = useState("");
-
-  function onSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const email = String(data.get("email") ?? "").trim();
-    if (!email) return;
-    setSubmittedEmail(email);
-    event.currentTarget.reset();
-  }
-
   return (
     <section
       id="waitlist"
@@ -360,23 +350,11 @@ function WaitlistSection() {
       aria-labelledby="waitlist-title"
     >
       <SectionReveal className="section-shell waitlist-card">
-        <p className="eyebrow">Early access</p>
+        <p className="eyebrow">Contact</p>
         <h2 id="waitlist-title">Ready to Make Every Recommendation Count?</h2>
-        <form onSubmit={onSubmit} className="waitlist-form">
-          <label className="sr-only" htmlFor="waitlist-email">
-            Email address
-          </label>
-          <div>
-            <Mail size={17} aria-hidden />
-            <input id="waitlist-email" name="email" type="email" placeholder="founder@store.com" required />
-            <button type="submit">Get Early Access</button>
-          </div>
-        </form>
-        {submittedEmail ? (
-          <p className="form-success" role="status">
-            You're on the early access list, {submittedEmail}.
-          </p>
-        ) : null}
+        <a className="button primary waitlist-contact" href={contactHref}>
+          Contact Us <ArrowRight size={17} />
+        </a>
       </SectionReveal>
     </section>
   );

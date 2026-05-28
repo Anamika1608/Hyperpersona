@@ -5,7 +5,11 @@ test.describe("HyperPersona landing page", () => {
     await page.goto("/");
 
     await expect(page.getByRole("heading", { name: /product rails that feel like mind reading/i })).toBeVisible();
-    await expect(page.getByRole("link", { name: /get early access/i }).first()).toBeVisible();
+    await expect(page.getByRole("link", { name: /contact us/i }).first()).toBeVisible();
+    await expect(page.getByRole("link", { name: /contact us/i }).first()).toHaveAttribute(
+      "href",
+      /mailto:hello@hyperpersona\.ai/,
+    );
     await expect(page.getByRole("heading", { name: /see hyperpersona in action/i })).toBeVisible();
     await expect(page.getByText(/A clean walkthrough from shopper signal/i)).toHaveCount(0);
     await expect(page.getByText(/Built for modern e-commerce stacks/i)).toHaveCount(0);
@@ -43,10 +47,12 @@ test.describe("HyperPersona landing page", () => {
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
     expect(overflow).toBe(false);
 
-    await expect(page.getByText("Work email")).toHaveCount(0);
-    await page.getByLabel("Email address").fill("mobile@example.com");
-    await page.getByRole("button", { name: /^get early access$/i }).click();
-    await expect(page.getByText(/You're on the early access list/i)).toBeVisible();
+    const contactLinks = page.getByRole("link", { name: /contact us/i });
+    await expect(contactLinks).toHaveCount(3);
+    await expect(contactLinks.last()).toBeVisible();
+    await expect(contactLinks.last()).toHaveAttribute("href", /mailto:hello@hyperpersona\.ai/);
+    await expect(page.getByLabel("Email address")).toHaveCount(0);
+    await expect(page.getByText(/You're on the early access list/i)).toHaveCount(0);
   });
 
   test("mobile demo video preview stays inside the viewport", async ({ page }) => {
@@ -103,7 +109,7 @@ test.describe("HyperPersona landing page", () => {
 
       const hero = page.getByTestId("section-Hero");
       const subtitle = hero.locator(".hero-subtitle");
-      const primaryCta = hero.getByRole("link", { name: /^get early access$/i });
+      const primaryCta = hero.getByRole("link", { name: /^contact us$/i });
       const productCard = page.locator(".hero-product-card");
       const productImage = page.getByRole("img", { name: /editorial storefront product/i });
       const rankingPanel = page.getByLabel("Preference-first recommendation ranking");

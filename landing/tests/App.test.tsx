@@ -239,15 +239,20 @@ describe("HyperPersona landing page", () => {
     expect(video).toHaveFocus();
   });
 
-  test("captures waitlist email locally without a network dependency", async () => {
-    const user = userEvent.setup();
+  test("uses mailto contact links instead of a dead waitlist form", () => {
     render(<App />);
 
-    expect(screen.queryByText("Work email")).not.toBeInTheDocument();
+    const expectedContactHref =
+      "mailto:hello@hyperpersona.ai?subject=HyperPersona%20demo%20request&body=Hi%20HyperPersona%20team%2C%0A%0AI%27d%20like%20to%20learn%20more%20about%20HyperPersona.%0A%0ACompany%3A%0AWebsite%3A%0AUse%20case%3A";
+    const contactLinks = screen.getAllByRole("link", { name: /contact us/i });
 
-    await user.type(screen.getByLabelText(/email address/i), "founder@example.com");
-    await user.click(screen.getByRole("button", { name: /^get early access$/i }));
-
-    expect(screen.getByText(/You're on the early access list/i)).toBeVisible();
+    expect(contactLinks.length).toBeGreaterThanOrEqual(3);
+    for (const link of contactLinks) {
+      expect(link).toHaveAttribute("href", expectedContactHref);
+    }
+    expect(screen.queryByRole("form")).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/email address/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/get early access/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/You're on the early access list/i)).not.toBeInTheDocument();
   });
 });
