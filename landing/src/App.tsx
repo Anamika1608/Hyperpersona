@@ -35,7 +35,7 @@ const heroRecommendations = [
 ];
 
 const contactHref =
-  "mailto:hello@hyperpersona.ai?subject=HyperPersona%20demo%20request&body=Hi%20HyperPersona%20team%2C%0A%0AI%27d%20like%20to%20learn%20more%20about%20HyperPersona.%0A%0ACompany%3A%0AWebsite%3A%0AUse%20case%3A";
+  "mailto:anamikaagg18@gmail.com?subject=HyperPersona%20demo%20request&body=Hi%20HyperPersona%20team%2C%0A%0AI%27d%20like%20to%20learn%20more%20about%20HyperPersona.%0A%0ACompany%3A%0AWebsite%3A%0AUse%20case%3A";
 
 function IconBadge({ icon: Icon }: { icon: LucideIcon }) {
   return (
@@ -350,7 +350,7 @@ function WaitlistSection() {
       aria-labelledby="waitlist-title"
     >
       <SectionReveal className="section-shell waitlist-card">
-        <p className="eyebrow">Contact</p>
+        <p className="eyebrow"></p>
         <h2 id="waitlist-title">Ready to Make Every Recommendation Count?</h2>
         <a className="button primary waitlist-contact" href={contactHref}>
           Contact Us <ArrowRight size={17} />
