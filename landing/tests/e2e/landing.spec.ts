@@ -8,7 +8,7 @@ test.describe("HyperPersona landing page", () => {
     await expect(page.getByRole("link", { name: /contact us/i }).first()).toBeVisible();
     await expect(page.getByRole("link", { name: /contact us/i }).first()).toHaveAttribute(
       "href",
-      /mailto:anamikaagg18@gmail\.com/,
+      /mailto:anamikaagg18@gmail\.com\?subject=HyperPersona%20demo%20request&body=Hi%2C%0A%0AI%20would%20love/,
     );
     await expect(page.getByRole("heading", { name: /see hyperpersona in action/i })).toBeVisible();
     await expect(page.getByText(/A clean walkthrough from shopper signal/i)).toHaveCount(0);
@@ -50,7 +50,7 @@ test.describe("HyperPersona landing page", () => {
     const contactLinks = page.getByRole("link", { name: /contact us/i });
     await expect(contactLinks).toHaveCount(3);
     await expect(contactLinks.last()).toBeVisible();
-    await expect(contactLinks.last()).toHaveAttribute("href", /mailto:anamikaagg18@gmail\.com/);
+    await expect(contactLinks.last()).toHaveAttribute("href", /body=Hi%2C%0A%0AI%20would%20love/);
     await expect(page.getByLabel("Email address")).toHaveCount(0);
     await expect(page.getByText(/You're on the early access list/i)).toHaveCount(0);
   });

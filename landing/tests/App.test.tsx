@@ -247,7 +247,7 @@ describe("HyperPersona landing page", () => {
     render(<App />);
 
     const expectedContactHref =
-      "mailto:anamikaagg18@gmail.com?subject=HyperPersona%20demo%20request&body=Hi%20HyperPersona%20team%2C%0A%0AI%27d%20like%20to%20learn%20more%20about%20HyperPersona.%0A%0ACompany%3A%0AWebsite%3A%0AUse%20case%3A";
+      "mailto:anamikaagg18@gmail.com?subject=HyperPersona%20demo%20request&body=Hi%2C%0A%0AI%20would%20love%20to%20learn%20more%20about%20HyperPersona.%0A%0ACompany%3A%0AWebsite%3A%0AUse%20case%3A";
     const contactLinks = screen.getAllByRole("link", { name: /contact us/i });
 
     expect(contactLinks.length).toBeGreaterThanOrEqual(3);
