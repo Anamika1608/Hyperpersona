@@ -55,6 +55,76 @@ test.describe("HyperPersona landing page", () => {
     await expect(page.getByText(/You're on the early access list/i)).toHaveCount(0);
   });
 
+  for (const viewport of [
+    { width: 320, height: 812 },
+    { width: 375, height: 812 },
+    { width: 430, height: 932 },
+  ]) {
+    test(`mobile typography and chrome stay proportional at ${viewport.width}px`, async ({ page }) => {
+      await page.setViewportSize(viewport);
+      await page.goto("/");
+
+      const nav = page.getByTestId("section-Navigation");
+      const heroTitle = page.getByRole("heading", { name: /product rails that feel like mind reading/i });
+      const waitlist = page.getByTestId("section-Ready to Make Every Recommendation Count?");
+      const waitlistTitle = waitlist.getByRole("heading", {
+        name: /ready to make every recommendation count/i,
+      });
+      const footer = page.getByTestId("section-Footer");
+
+      const metrics = await page.evaluate(() => {
+        const read = (selector: string) => {
+          const element = document.querySelector(selector);
+          if (!element) {
+            return null;
+          }
+
+          const rect = element.getBoundingClientRect();
+          const styles = getComputedStyle(element);
+
+          return {
+            fontSize: Number.parseFloat(styles.fontSize),
+            height: rect.height,
+            right: rect.right,
+            width: rect.width,
+            x: rect.x,
+          };
+        };
+
+        return {
+          footerByline: read(".footer p"),
+          footerNav: read(".footer nav"),
+          footerWordmark: read(".footer .wordmark"),
+          heroTitle: read("#hero-title"),
+          navCta: read(".nav-cta"),
+          navWordmark: read(".site-nav .wordmark"),
+          overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth,
+          waitlistCard: read(".waitlist-card"),
+          waitlistTitle: read("#waitlist-title"),
+        };
+      });
+
+      await expect(nav).toBeVisible();
+      await expect(heroTitle).toBeVisible();
+      await waitlist.scrollIntoViewIfNeeded();
+      await expect(waitlistTitle).toBeVisible();
+      await footer.scrollIntoViewIfNeeded();
+      await expect(footer).toBeVisible();
+
+      expect(metrics.overflow).toBe(false);
+      expect(metrics.heroTitle?.fontSize).toBeLessThanOrEqual(38);
+      expect(metrics.waitlistTitle?.fontSize).toBeLessThanOrEqual(38);
+      expect(metrics.waitlistTitle?.width ?? 0).toBeLessThanOrEqual((metrics.waitlistCard?.width ?? 0) - 32);
+      expect(metrics.navWordmark?.fontSize).toBeLessThanOrEqual(19);
+      expect(metrics.navCta?.fontSize).toBeLessThanOrEqual(12);
+      expect(metrics.navCta?.height).toBeGreaterThanOrEqual(44);
+      expect(metrics.footerWordmark?.fontSize).toBeLessThanOrEqual(19);
+      expect(metrics.footerNav?.fontSize).toBeLessThanOrEqual(13);
+      expect(metrics.footerByline?.fontSize).toBeLessThanOrEqual(13);
+      expect(metrics.footerByline?.right ?? 0).toBeLessThanOrEqual(viewport.width);
+    });
+  }
+
   test("mobile demo video preview stays inside the viewport", async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 812 });
     await page.goto("/");
