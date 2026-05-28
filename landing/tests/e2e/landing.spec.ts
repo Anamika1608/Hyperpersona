@@ -150,11 +150,13 @@ test.describe("HyperPersona landing page", () => {
         const ctaRect = cta.getBoundingClientRect();
 
         return {
+          ctaRightInset: navRect.right - ctaRect.right,
           ctaFontSize: Number.parseFloat(getComputedStyle(cta).fontSize),
           ctaHeight: ctaRect.height,
           ctaText: cta.innerText.trim(),
           ctaWidth: ctaRect.width,
           navHeight: navRect.height,
+          wordmarkLeftInset: wordmarkRect.x - navRect.x,
           wordmarkFontSize: Number.parseFloat(getComputedStyle(wordmark).fontSize),
           wordmarkWidth: wordmarkRect.width,
         };
@@ -170,6 +172,8 @@ test.describe("HyperPersona landing page", () => {
       expect(metrics?.ctaFontSize).toBeLessThanOrEqual(11);
       expect(metrics?.ctaWidth).toBeLessThanOrEqual(76);
       expect(metrics?.ctaHeight).toBeGreaterThanOrEqual(44);
+      expect(metrics?.wordmarkLeftInset).toBeGreaterThanOrEqual(12);
+      expect(metrics?.ctaRightInset).toBeGreaterThanOrEqual(12);
     });
   }
 
