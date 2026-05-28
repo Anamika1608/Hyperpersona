@@ -57,8 +57,9 @@ function Navbar() {
         <a href="#demo">Demo</a>
         <a href="#integrations">Integrations</a>
       </nav>
-      <a className="nav-cta" href={contactHref}>
-        Contact Us
+      <a className="nav-cta" href={contactHref} aria-label="Contact Us">
+        <span>Contact</span>
+        <span className="nav-cta-extra"> Us</span>
       </a>
     </header>
   );

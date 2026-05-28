@@ -125,6 +125,54 @@ test.describe("HyperPersona landing page", () => {
     });
   }
 
+  for (const viewport of [
+    { width: 320, height: 812 },
+    { width: 375, height: 812 },
+  ]) {
+    test(`mobile navbar is compact at ${viewport.width}px`, async ({ page }) => {
+      await page.setViewportSize(viewport);
+      await page.goto("/");
+
+      const nav = page.getByTestId("section-Navigation");
+      const navCta = nav.getByRole("link", { name: /^contact us$/i });
+
+      const metrics = await page.evaluate(() => {
+        const navElement = document.querySelector(".site-nav");
+        const wordmark = document.querySelector(".site-nav .wordmark");
+        const cta = document.querySelector(".site-nav .nav-cta") as HTMLElement | null;
+
+        if (!navElement || !wordmark || !cta) {
+          return null;
+        }
+
+        const navRect = navElement.getBoundingClientRect();
+        const wordmarkRect = wordmark.getBoundingClientRect();
+        const ctaRect = cta.getBoundingClientRect();
+
+        return {
+          ctaFontSize: Number.parseFloat(getComputedStyle(cta).fontSize),
+          ctaHeight: ctaRect.height,
+          ctaText: cta.innerText.trim(),
+          ctaWidth: ctaRect.width,
+          navHeight: navRect.height,
+          wordmarkFontSize: Number.parseFloat(getComputedStyle(wordmark).fontSize),
+          wordmarkWidth: wordmarkRect.width,
+        };
+      });
+
+      await expect(nav).toBeVisible();
+      await expect(navCta).toBeVisible();
+      expect(metrics).not.toBeNull();
+      expect(metrics?.navHeight).toBeLessThanOrEqual(64);
+      expect(metrics?.wordmarkFontSize).toBeLessThanOrEqual(16);
+      expect(metrics?.wordmarkWidth).toBeLessThanOrEqual(120);
+      expect(metrics?.ctaText).toBe("Contact");
+      expect(metrics?.ctaFontSize).toBeLessThanOrEqual(11);
+      expect(metrics?.ctaWidth).toBeLessThanOrEqual(76);
+      expect(metrics?.ctaHeight).toBeGreaterThanOrEqual(44);
+    });
+  }
+
   test("mobile demo video preview stays inside the viewport", async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 812 });
     await page.goto("/");
