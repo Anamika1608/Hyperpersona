@@ -1316,6 +1316,10 @@ pre + pre {
     margin-top: 0.2rem;
   }
 
+  .hero-actions .button.primary {
+    border-radius: 1.5rem;
+  }
+
   .hero-product-card {
     min-height: 23rem;
     border-radius: 1rem;

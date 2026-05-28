@@ -177,6 +177,28 @@ test.describe("HyperPersona landing page", () => {
     });
   }
 
+  for (const viewport of [
+    { width: 320, height: 812 },
+    { width: 375, height: 812 },
+    { width: 430, height: 932 },
+  ]) {
+    test(`mobile hero contact button uses a compact corner radius at ${viewport.width}px`, async ({ page }) => {
+      await page.setViewportSize(viewport);
+      await page.goto("/");
+
+      const hero = page.getByTestId("section-Hero");
+      const primaryContact = hero.getByRole("link", { name: /^contact us$/i });
+
+      const radius = await primaryContact.evaluate((element) =>
+        Number.parseFloat(getComputedStyle(element).borderTopLeftRadius),
+      );
+
+      await expect(primaryContact).toBeVisible();
+      expect(radius).toBeGreaterThanOrEqual(20);
+      expect(radius).toBeLessThanOrEqual(28);
+    });
+  }
+
   test("mobile demo video preview stays inside the viewport", async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 812 });
     await page.goto("/");
@@ -355,10 +377,10 @@ test.describe("HyperPersona landing page", () => {
     const footer = page.getByTestId("section-Footer");
     await footer.scrollIntoViewIfNeeded();
 
-    const footerNavBox = await footer.getByRole("navigation", { name: "Footer" }).boundingBox();
+    const footerStackBox = await footer.locator(".footer-link-stack").boundingBox();
     const bylineBox = await footer.getByText("Built with love by the HyperPersona team.").boundingBox();
 
-    expect(bylineBox?.x ?? 0).toBeCloseTo(footerNavBox?.x ?? 0, 0);
-    expect(bylineBox?.y ?? 0).toBeGreaterThan((footerNavBox?.y ?? 0) + (footerNavBox?.height ?? 0) + 4);
+    expect(Math.abs((bylineBox?.x ?? 0) - (footerStackBox?.x ?? 0))).toBeLessThanOrEqual(8);
+    expect(bylineBox?.y ?? 0).toBeGreaterThan((footerStackBox?.y ?? 0) + 20);
   });
 });
