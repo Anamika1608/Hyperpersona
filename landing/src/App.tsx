@@ -363,7 +363,9 @@ function WaitlistSection() {
         <p className="eyebrow">Early access</p>
         <h2 id="waitlist-title">Ready to Make Every Recommendation Count?</h2>
         <form onSubmit={onSubmit} className="waitlist-form">
-          <label htmlFor="waitlist-email">Work email</label>
+          <label className="sr-only" htmlFor="waitlist-email">
+            Email address
+          </label>
           <div>
             <Mail size={17} aria-hidden />
             <input id="waitlist-email" name="email" type="email" placeholder="founder@store.com" required />

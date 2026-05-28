@@ -43,7 +43,8 @@ test.describe("HyperPersona landing page", () => {
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
     expect(overflow).toBe(false);
 
-    await page.getByLabel("Work email").fill("mobile@example.com");
+    await expect(page.getByText("Work email")).toHaveCount(0);
+    await page.getByLabel("Email address").fill("mobile@example.com");
     await page.getByRole("button", { name: /^get early access$/i }).click();
     await expect(page.getByText(/You're on the early access list/i)).toBeVisible();
   });

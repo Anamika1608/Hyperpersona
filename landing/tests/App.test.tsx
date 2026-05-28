@@ -243,7 +243,9 @@ describe("HyperPersona landing page", () => {
     const user = userEvent.setup();
     render(<App />);
 
-    await user.type(screen.getByLabelText(/work email/i), "founder@example.com");
+    expect(screen.queryByText("Work email")).not.toBeInTheDocument();
+
+    await user.type(screen.getByLabelText(/email address/i), "founder@example.com");
     await user.click(screen.getByRole("button", { name: /^get early access$/i }));
 
     expect(screen.getByText(/You're on the early access list/i)).toBeVisible();
