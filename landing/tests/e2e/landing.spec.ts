@@ -117,7 +117,8 @@ test.describe("HyperPersona landing page", () => {
       expect(metrics.waitlistTitle?.width ?? 0).toBeLessThanOrEqual((metrics.waitlistCard?.width ?? 0) - 32);
       expect(metrics.navWordmark?.fontSize).toBeLessThanOrEqual(19);
       expect(metrics.navCta?.fontSize).toBeLessThanOrEqual(12);
-      expect(metrics.navCta?.height).toBeGreaterThanOrEqual(44);
+      expect(metrics.navCta?.height).toBeGreaterThanOrEqual(36);
+      expect(metrics.navCta?.height).toBeLessThanOrEqual(40);
       expect(metrics.footerWordmark?.fontSize).toBeLessThanOrEqual(19);
       expect(metrics.footerNav?.fontSize).toBeLessThanOrEqual(13);
       expect(metrics.footerByline?.fontSize).toBeLessThanOrEqual(13);
@@ -175,7 +176,8 @@ test.describe("HyperPersona landing page", () => {
       expect(metrics?.ctaPaddingLeft).toBeGreaterThanOrEqual(16);
       expect(metrics?.ctaPaddingRight).toBeGreaterThanOrEqual(16);
       expect(metrics?.ctaWidth).toBeLessThanOrEqual(84);
-      expect(metrics?.ctaHeight).toBeGreaterThanOrEqual(44);
+      expect(metrics?.ctaHeight).toBeGreaterThanOrEqual(36);
+      expect(metrics?.ctaHeight).toBeLessThanOrEqual(40);
       expect(metrics?.wordmarkLeftInset).toBeGreaterThanOrEqual(12);
       expect(metrics?.ctaRightInset).toBeGreaterThanOrEqual(12);
     });
